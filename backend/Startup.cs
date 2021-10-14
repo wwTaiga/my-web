@@ -11,7 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-namespace dotnet_api
+
+namespace MyWeb
 {
     public class Startup
     {
@@ -29,7 +30,7 @@ namespace dotnet_api
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "dotnet_api", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "MyWeb", Version = "v1" });
             });
         }
 
@@ -40,7 +41,7 @@ namespace dotnet_api
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "dotnet_api v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "MyWeb v1"));
             }
 
             app.UseHttpsRedirection();

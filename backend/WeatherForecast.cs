@@ -1,6 +1,6 @@
 using System;
 
-namespace dotnet_api
+namespace MyWeb
 {
     public class WeatherForecast
     {
