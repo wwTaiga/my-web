@@ -21,7 +21,7 @@ namespace MyWeb.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<LoginUserDto>>> GetAllUser()
+        public async Task<ActionResult<IEnumerable<LoginUserDto>>> GetAllUserAsync()
         {
             IEnumerable<LoginUser> loginUserList = await loginUserRepo.GetAllLoginUserAsync();
 
@@ -29,7 +29,7 @@ namespace MyWeb.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<LoginUserDto>> GetUserById(Guid id)
+        public async Task<ActionResult<LoginUserDto>> GetUserByIdAsync(Guid id)
         {
             LoginUser loginUser = await loginUserRepo.GetLoginUserByIdAsync(id);
 
@@ -42,7 +42,7 @@ namespace MyWeb.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateLoginUser(AddLoginUserDto userDto)
+        public async Task<ActionResult> CreateLoginUserAsync(AddLoginUserDto userDto)
         {
             LoginUser user = new()
             {
@@ -56,7 +56,7 @@ namespace MyWeb.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateLoginUser(Guid id, UpdateLoginUserDto userDto)
+        public async Task<ActionResult> UpdateLoginUserAsync(Guid id, UpdateLoginUserDto userDto)
         {
             var user = await loginUserRepo.GetLoginUserByIdAsync(id);
 
@@ -73,7 +73,7 @@ namespace MyWeb.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteUser(Guid id)
+        public async Task<ActionResult> DeleteUserAsync(Guid id)
         {
             LoginUser user = await loginUserRepo.GetLoginUserByIdAsync(id);
 
