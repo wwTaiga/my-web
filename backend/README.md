@@ -1,4 +1,4 @@
-#Prerequisite - Install Entity Framework
+# Prerequisite - Install Entity Framework
 
 ## install .Net5.0 sdk
 
@@ -22,5 +22,5 @@ dotnet run
 
 ## Migrate / Update database table
 
-dotnet ef migrations add SOMECOMMITMESSAGE
+dotnet ef migrations add SOMECOMMITMESSAGE<br />
 dotnet ef database update
