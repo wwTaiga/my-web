@@ -1,31 +1,31 @@
 using System;
-using MongoDB.Bson.Serialization.Attributes;
+using System.ComponentModel.DataAnnotations;
 using MyWeb.Dtos;
 
-namespace MyWeb.Entities
+namespace MyWeb.Models
 {
-    public class User
+    public class LoginUser
     {
-        public User()
+        public LoginUser()
         {
             Id = Guid.NewGuid();
         }
 
-        public User(string username, string password)
+        public LoginUser(string username, string password)
         {
             Id = Guid.NewGuid();
             Username = username;
             Password = password;
         }
 
-        [BsonId]
+        [Key]
         public Guid Id { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
 
-        public UserDto asDto()
+        public LoginUserDto asDto()
         {
-            return new UserDto(this.Id, this.Username, this.Password);
+            return new LoginUserDto(this.Id, this.Username, this.Password);
         }
     }
 }
