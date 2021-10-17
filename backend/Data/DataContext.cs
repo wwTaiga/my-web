@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using MyWeb.Models;
 
-namespace MyWeb.DataContexts
+namespace MyWeb.Data
 {
     public class DataContext : DbContext, IDataContext
     {

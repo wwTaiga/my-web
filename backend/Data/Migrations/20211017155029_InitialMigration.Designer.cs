@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using MyWeb.DataContexts;
+using MyWeb.Data;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-namespace MyWeb.Migrations
+namespace MyWeb.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20211016175119_InitialMigration")]
+    [Migration("20211017155029_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

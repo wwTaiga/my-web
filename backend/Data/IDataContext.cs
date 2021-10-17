@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MyWeb.Models;
 
-namespace MyWeb.DataContexts
+namespace MyWeb.Data
 {
     public interface IDataContext
     {
