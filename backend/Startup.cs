@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using MyWeb.DataContexts;
+using MyWeb.Data;
 using MyWeb.Repositories;
 using MyWeb.Settings;
 
