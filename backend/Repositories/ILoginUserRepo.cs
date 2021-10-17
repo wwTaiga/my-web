@@ -11,6 +11,8 @@ namespace MyWeb.Repositories
 
         Task<LoginUser> GetLoginUserByIdAsync(Guid Id);
 
+        Task<LoginUser> GetLoginUserByUsernameAsync(string username);
+
         Task AddLoginUserAsync(LoginUser user);
 
         Task UpdateLoginUserAsync(LoginUser user);

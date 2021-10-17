@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyWeb.Dtos;
 using MyWeb.Models;
@@ -9,15 +10,25 @@ using MyWeb.Repositories;
 
 namespace MyWeb.Controllers
 {
-    [ApiController]
     [Route("users")]
+    [ApiController]
+    [Authorize]
     public class LoginUserController : ControllerBase
     {
         private readonly ILoginUserRepo loginUserRepo;
 
-        public LoginUserController(ILoginUserRepo userRepo)
+        public LoginUserController(ILoginUserRepo loginUserRepo)
         {
-            this.loginUserRepo = userRepo;
+            this.loginUserRepo = loginUserRepo;
+        }
+
+        [HttpGet("noau")]
+        [AllowAnonymous]
+        public async Task<ActionResult<IEnumerable<LoginUserDto>>> GaetAllUserAsync()
+        {
+            IEnumerable<LoginUser> loginUserList = await loginUserRepo.GetAllLoginUserAsync();
+
+            return Ok(loginUserList.Select(loginUser => loginUser.asDto()));
         }
 
         [HttpGet]
@@ -46,8 +57,6 @@ namespace MyWeb.Controllers
         {
             LoginUser user = new()
             {
-                Username = userDto.Username,
-                Password = userDto.Password
             };
 
             await loginUserRepo.AddLoginUserAsync(user);
@@ -65,8 +74,6 @@ namespace MyWeb.Controllers
                 return NotFound();
             }
 
-            user.Username = userDto.Username;
-            user.Password = userDto.Password;
             await loginUserRepo.UpdateLoginUserAsync(user);
 
             return Ok();

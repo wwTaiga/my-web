@@ -1,8 +1,6 @@
-using System;
-
 namespace MyWeb.Dtos
 {
-    public record LoginUserDto(Guid Id, string Username, string Password);
+    public record LoginUserDto(string Id, string Username);
 
     public record AddLoginUserDto(string Username, string Password);
 

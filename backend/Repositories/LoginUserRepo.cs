@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MyWeb.Data;
@@ -43,6 +44,20 @@ namespace MyWeb.Repositories
         public async Task<LoginUser> GetLoginUserByIdAsync(Guid id)
         {
             LoginUser existingLoginUser = await context.LoginUser.FindAsync(id);
+            if (existingLoginUser is null)
+            {
+                throw new NullReferenceException();
+            }
+
+            return existingLoginUser;
+        }
+
+        public async Task<LoginUser> GetLoginUserByUsernameAsync(string username)
+        {
+            LoginUser existingLoginUser = await context.LoginUser.Where(loginUser =>
+                loginUser.UserName == username
+            ).FirstOrDefaultAsync();
+
             if (existingLoginUser is null)
             {
                 throw new NullReferenceException();
