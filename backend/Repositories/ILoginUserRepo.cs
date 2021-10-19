@@ -11,7 +11,15 @@ namespace MyWeb.Repositories
 
         Task<LoginUser> GetLoginUserByIdAsync(Guid Id);
 
-        Task<LoginUser> GetLoginUserByUsernameAsync(string username);
+        /// <summary>
+        /// Get <c>LoginUser</c> from database by <paramref name="userName"/>
+        /// </summary>
+        /// <param name="userName">User Name</param>
+        /// <param name="isNoTracking">Is get result asNotTracking()</param>
+        /// <returns>
+        /// Return <c>LoginUser</c> if exist else return null
+        /// </returns>
+        Task<LoginUser> GetLoginUserByUserNameAsync(string userName, bool isNoTracking);
 
         Task AddLoginUserAsync(LoginUser user);
 

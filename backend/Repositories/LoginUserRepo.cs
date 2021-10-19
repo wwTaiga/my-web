@@ -10,40 +10,40 @@ namespace MyWeb.Repositories
 {
     public class LoginUserRepo : ILoginUserRepo
     {
-        private readonly IDataContext context;
+        private readonly IDataContext _context;
 
         public LoginUserRepo(IDataContext context)
         {
-            this.context = context;
+            this._context = context;
         }
 
         public async Task AddLoginUserAsync(LoginUser user)
         {
-            context.LoginUser.Add(user);
-            await context.SaveChangesAsync();
+            _context.LoginUser.Add(user);
+            await _context.SaveChangesAsync();
         }
 
         public async Task DeleteLoginUserAsync(Guid id)
         {
-            LoginUser existingLoginUser = await context.LoginUser.FindAsync(id);
+            LoginUser existingLoginUser = await _context.LoginUser.FindAsync(id);
 
             if (existingLoginUser is null)
             {
                 throw new NullReferenceException();
             }
 
-            context.LoginUser.Remove(existingLoginUser);
-            await context.SaveChangesAsync();
+            _context.LoginUser.Remove(existingLoginUser);
+            await _context.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<LoginUser>> GetAllLoginUserAsync()
         {
-            return await context.LoginUser.ToListAsync();
+            return await _context.LoginUser.ToListAsync();
         }
 
         public async Task<LoginUser> GetLoginUserByIdAsync(Guid id)
         {
-            LoginUser existingLoginUser = await context.LoginUser.FindAsync(id);
+            LoginUser existingLoginUser = await _context.LoginUser.FindAsync(id);
             if (existingLoginUser is null)
             {
                 throw new NullReferenceException();
@@ -52,11 +52,19 @@ namespace MyWeb.Repositories
             return existingLoginUser;
         }
 
-        public async Task<LoginUser> GetLoginUserByUsernameAsync(string username)
+        public async Task<LoginUser> GetLoginUserByUserNameAsync(string userName,
+                bool isNoTracking)
         {
-            LoginUser existingLoginUser = await context.LoginUser.Where(loginUser =>
-                loginUser.UserName == username
-            ).FirstOrDefaultAsync();
+            IQueryable<LoginUser> query = _context.LoginUser.Where(loginUser =>
+                loginUser.UserName == userName
+            );
+
+            if (isNoTracking)
+            {
+                query = query.AsNoTracking();
+            }
+
+            LoginUser existingLoginUser = await query.FirstOrDefaultAsync();
 
             if (existingLoginUser is null)
             {
@@ -68,13 +76,13 @@ namespace MyWeb.Repositories
 
         public async Task UpdateLoginUserAsync(LoginUser loginUser)
         {
-            LoginUser existingLoginUser = await context.LoginUser.FindAsync(loginUser.Id);
+            LoginUser existingLoginUser = await _context.LoginUser.FindAsync(loginUser.Id);
             if (existingLoginUser is null)
             {
                 throw new NullReferenceException();
             }
 
-            await context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -12,6 +12,7 @@ using Microsoft.OpenApi.Models;
 using MyWeb.Data;
 using MyWeb.Models;
 using MyWeb.Repositories;
+using MyWeb.Services;
 
 namespace MyWeb
 {
@@ -27,8 +28,6 @@ namespace MyWeb
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // TODO: build a fuction to get key
-            var key = Encoding.ASCII.GetBytes("HOWLONGDOYOUNEEDYOURMOTHERFUCKERPLEASELETMEPASS");
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -41,7 +40,7 @@ namespace MyWeb
                     OnTokenValidated = context =>
                     {
                         var userMachine = context.HttpContext.RequestServices
-                                            .GetRequiredService<UserManager<LoginUser>>();
+                                .GetRequiredService<UserManager<LoginUser>>();
                         var user = userMachine.GetUserAsync(context.HttpContext.User);
 
                         if (user is null)
@@ -57,7 +56,8 @@ namespace MyWeb
                 x.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                            Encoding.ASCII.GetBytes(Configuration["Jwt:Key"])),
                     ValidateIssuer = false,
                     ValidateAudience = false
                 };
@@ -67,7 +67,8 @@ namespace MyWeb
             // Dependency injection
             // DB
             services.AddScoped<IDataContext>(provider => provider.GetService<DataContext>());
-
+            // Services
+            services.AddScoped<IAccountService, AccountService>();
             // Repo
             services.AddScoped<ILoginUserRepo, LoginUserRepo>();
 
