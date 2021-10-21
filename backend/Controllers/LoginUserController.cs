@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MyWeb.Dtos;
 using MyWeb.Models;
-using MyWeb.Repositories;
+using MyWeb.Services;
 
 namespace MyWeb.Controllers
 {
@@ -15,18 +15,19 @@ namespace MyWeb.Controllers
     [Authorize]
     public class LoginUserController : ControllerBase
     {
-        private readonly ILoginUserRepo loginUserRepo;
+        private readonly IRepoService _repoService;
 
-        public LoginUserController(ILoginUserRepo loginUserRepo)
+        public LoginUserController(IRepoService repoService)
         {
-            this.loginUserRepo = loginUserRepo;
+            _repoService = repoService;
         }
 
         [HttpGet("noau")]
         [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<LoginUserDto>>> GaetAllUserAsync()
         {
-            IEnumerable<LoginUser> loginUserList = await loginUserRepo.GetAllLoginUserAsync();
+            IEnumerable<LoginUser> loginUserList = await _repoService.LoginUser
+                .FindAllNTAsync();
 
             return Ok(loginUserList.Select(loginUser => loginUser.asDto()));
         }
@@ -34,15 +35,17 @@ namespace MyWeb.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<LoginUserDto>>> GetAllUserAsync()
         {
-            IEnumerable<LoginUser> loginUserList = await loginUserRepo.GetAllLoginUserAsync();
+            IEnumerable<LoginUser> loginUserList = await _repoService.LoginUser
+                .FindAllNTAsync();
 
             return Ok(loginUserList.Select(loginUser => loginUser.asDto()));
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<LoginUserDto>> GetUserByIdAsync(Guid id)
+        public async Task<ActionResult<LoginUserDto>> GetUserByIdAsync(string id)
         {
-            LoginUser loginUser = await loginUserRepo.GetLoginUserByIdAsync(id);
+            LoginUser loginUser = await _repoService.LoginUser.FindByConditionNT(
+                    user => user.Id == id).FirstOrDefaultAsync();
 
             if (loginUser is null)
             {
@@ -59,37 +62,42 @@ namespace MyWeb.Controllers
             {
             };
 
-            await loginUserRepo.AddLoginUserAsync(user);
+            _repoService.LoginUser.AddAsync(user);
+            await _repoService.SaveAsync();
 
             return Ok();
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateLoginUserAsync(Guid id, UpdateLoginUserDto userDto)
+        public async Task<ActionResult> UpdateLoginUserAsync(string id, UpdateLoginUserDto userDto)
         {
-            var user = await loginUserRepo.GetLoginUserByIdAsync(id);
+            var user = await _repoService.LoginUser.FindByConditionNT(user => user.Id == id)
+                .FirstOrDefaultAsync();
 
             if (user is null)
             {
                 return NotFound();
             }
 
-            await loginUserRepo.UpdateLoginUserAsync(user);
+            _repoService.LoginUser.UpdateAsync(user);
+            await _repoService.SaveAsync();
 
             return Ok();
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteUserAsync(Guid id)
+        public async Task<ActionResult> DeleteUserAsync(string id)
         {
-            LoginUser user = await loginUserRepo.GetLoginUserByIdAsync(id);
+            var user = await _repoService.LoginUser.FindByConditionNT(user => user.Id == id)
+                .FirstOrDefaultAsync();
 
             if (user is null)
             {
                 return NotFound();
             }
 
-            await loginUserRepo.DeleteLoginUserAsync(id);
+            _repoService.LoginUser.DeleteAsync(user);
+            await _repoService.SaveAsync();
 
             return Ok();
         }

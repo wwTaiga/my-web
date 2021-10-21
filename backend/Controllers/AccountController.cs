@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MyWeb.Dtos;
 using MyWeb.Models;
-using MyWeb.Repositories;
 using MyWeb.Services;
 
 namespace MyWeb.Controllers
@@ -15,15 +14,17 @@ namespace MyWeb.Controllers
     {
 
         private readonly IAccountService _accountService;
-        private readonly ILoginUserRepo _loginUserRepo;
+        private readonly IRepoService _repoService;
         private readonly UserManager<LoginUser> _userManager;
         private readonly SignInManager<LoginUser> _signInManager;
 
-        public AccountController(IAccountService accountService, ILoginUserRepo loginUserRepo,
-                UserManager<LoginUser> userManager, SignInManager<LoginUser> signInManager)
+        public AccountController(IAccountService accountService,
+                IRepoService repoService,
+                UserManager<LoginUser> userManager,
+                SignInManager<LoginUser> signInManager)
         {
             _accountService = accountService;
-            _loginUserRepo = loginUserRepo;
+            _repoService = repoService;
             _userManager = userManager;
             _signInManager = signInManager;
         }
@@ -31,16 +32,16 @@ namespace MyWeb.Controllers
         [HttpPost("login")]
         public async Task<ActionResult> DoLogin(LoginDto loginDto)
         {
-            LoginUser loginUser = await _loginUserRepo.GetLoginUserByUserNameAsync(
-                loginDto.userName, true);
+            LoginUser loginUser = await _repoService.LoginUser
+                .FindLoginUserByUserNameAsync(loginDto.userName, true);
 
             if (loginUser is null)
             {
                 return Ok("Invalid username or password");
             }
 
-            var signInResult = await _signInManager.CheckPasswordSignInAsync(loginUser,
-                    loginDto.password, false);
+            var signInResult = await _signInManager
+                .CheckPasswordSignInAsync(loginUser, loginDto.password, false);
             if (signInResult.Succeeded)
             {
                 var tokenString = _accountService.GenerateJwtToken(loginUser.UserName);
@@ -62,7 +63,8 @@ namespace MyWeb.Controllers
                 EmailConfirmed = false
             };
 
-            var result = await _userManager.CreateAsync(newUser, registerDto.password);
+            var result = await _userManager.CreateAsync(newUser,
+                    registerDto.password);
             if (result.Succeeded)
             {
                 return Ok("User created");

@@ -7,8 +7,11 @@ namespace MyWeb.Data
 {
     public interface IDataContext
     {
+        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+
+        DbSet<T> Set<T>() where T : class;
+
         DbSet<LoginUser> LoginUser { get; set; }
 
-        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }

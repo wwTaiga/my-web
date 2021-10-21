@@ -13,6 +13,7 @@ using MyWeb.Data;
 using MyWeb.Models;
 using MyWeb.Repositories;
 using MyWeb.Services;
+using MyWeb.Settings;
 
 namespace MyWeb
 {
@@ -63,14 +64,8 @@ namespace MyWeb
                 };
             });
 
-
-            // Dependency injection
-            // DB
-            services.AddScoped<IDataContext>(provider => provider.GetService<DataContext>());
-            // Services
-            services.AddScoped<IAccountService, AccountService>();
-            // Repo
-            services.AddScoped<ILoginUserRepo, LoginUserRepo>();
+            services.AddRepositories();
+            services.AddServices();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
