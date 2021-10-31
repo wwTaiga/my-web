@@ -14,16 +14,20 @@ import {
     useColorModeValue,
     useBreakpointValue,
     useDisclosure,
+    useColorMode,
 } from '@chakra-ui/react';
 import {
     HamburgerIcon,
     CloseIcon,
     ChevronDownIcon,
     ChevronRightIcon,
+    MoonIcon,
+    SunIcon,
 } from '@chakra-ui/icons';
 
-export function Header(): JSX.Element {
+const Header = (): JSX.Element => {
     const { isOpen, onToggle } = useDisclosure();
+    const { colorMode, toggleColorMode } = useColorMode();
 
     return (
         <Box>
@@ -82,6 +86,9 @@ export function Header(): JSX.Element {
                     direction={'row'}
                     spacing={6}
                 >
+                    <Button onClick={toggleColorMode}>
+                        {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
+                    </Button>
                     <Button
                         as={'a'}
                         fontSize={'sm'}
@@ -112,7 +119,7 @@ export function Header(): JSX.Element {
             </Collapse>
         </Box>
     );
-}
+};
 
 const DesktopNav = () => {
     const linkColor = useColorModeValue('gray.600', 'gray.200');

@@ -16,7 +16,7 @@ import {
 export function LoginForm(): JSX.Element {
     return (
         <Flex
-            minH={'100vh'}
+            minH={'calc(100vh - 60px)'}
             align={'center'}
             justify={'center'}
             bg={useColorModeValue('gray.50', 'gray.800')}
