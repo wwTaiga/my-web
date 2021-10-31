@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,6 +16,11 @@ namespace MyWeb
         {
             builder.ConfigureServices((context, services) =>
             {
+                services.Configure<IdentityOptions>(options =>
+                {
+                    options.User.RequireUniqueEmail = true;
+                });
+
                 services.AddDbContext<DataContext>(options =>
                 {
                     var settings = context.Configuration.GetSection(nameof(PostgresDbSettings))
