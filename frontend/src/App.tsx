@@ -1,11 +1,12 @@
-import TicTacToe from './pages/Tic-tac-toe';
-import { ChakraProvider } from '@chakra-ui/react';
+import LoginForm from './components/authentication/LoginForm';
+import Header from './components/general/Header';
 
 function App(): JSX.Element {
     return (
-        <ChakraProvider>
-            <TicTacToe />
-        </ChakraProvider>
+        <>
+            <Header />
+            <LoginForm />
+        </>
     );
 }
 
