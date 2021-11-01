@@ -1,11 +1,8 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MyWeb.Data;
 using MyWeb.Models;
-using MyWeb.Settings;
 
 [assembly: HostingStartup(typeof(MyWeb.IdentityHostingStartup))]
 namespace MyWeb
@@ -19,16 +16,11 @@ namespace MyWeb
                 services.Configure<IdentityOptions>(options =>
                 {
                     options.User.RequireUniqueEmail = true;
+                    options.SignIn.RequireConfirmedEmail = false;
                 });
 
-                services.AddDbContext<DataContext>(options =>
-                {
-                    var settings = context.Configuration.GetSection(nameof(PostgresDbSettings))
-                        .Get<PostgresDbSettings>();
-                    options.UseNpgsql(settings.ConnectionString);
-                });
-
-                services.AddDefaultIdentity<LoginUser>(options => options.SignIn.RequireConfirmedAccount = false)
+                services.AddDefaultIdentity<LoginUser>()
+                    .AddRoles<IdentityRole>()
                     .AddEntityFrameworkStores<DataContext>();
             });
         }

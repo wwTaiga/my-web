@@ -37,7 +37,16 @@ namespace MyWeb.Controllers
 
             if (loginUser is null)
             {
-                return Ok("Invalid username or password");
+                var response = new
+                {
+                    status = "fail",
+                    error = new
+                    {
+                        code = 404,
+                        message = "Invalid username or password"
+                    }
+                };
+                return Ok(response);
             }
 
             var signInResult = await _signInManager
@@ -45,11 +54,28 @@ namespace MyWeb.Controllers
             if (signInResult.Succeeded)
             {
                 var tokenString = _accountService.GenerateJwtToken(loginUser.UserName);
-                return Ok(new { Token = tokenString });
+                var response = new
+                {
+                    status = "success",
+                    data = new
+                    {
+                        Token = tokenString
+                    }
+                };
+                return Ok(response);
             }
             else
             {
-                return Ok("Invalid username or password");
+                var response = new
+                {
+                    status = "fail",
+                    error = new
+                    {
+                        code = 404,
+                        message = "Invalid username or password"
+                    }
+                };
+                return Ok(response);
             }
         }
 
