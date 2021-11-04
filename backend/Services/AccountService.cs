@@ -4,22 +4,20 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using MyWeb.Repositories;
+using MyWeb.Models;
 
 namespace MyWeb.Services
 {
     public class AccountService : IAccountService
     {
         private readonly IConfiguration _config;
-        private readonly ILoginUserRepo _loginUserRepo;
 
-        public AccountService(ILoginUserRepo loginUserRepo, IConfiguration config)
+        public AccountService(IConfiguration config)
         {
             _config = config;
-            _loginUserRepo = loginUserRepo;
         }
 
-        public string GenerateJwtToken(string userName)
+        public string GenerateJwtToken(LoginUser loginUser)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var tokenKey = Encoding.ASCII.GetBytes(_config["Jwt:Key"]);
@@ -28,9 +26,11 @@ namespace MyWeb.Services
                 Subject = new ClaimsIdentity(
                     new Claim[]
                     {
-                        new Claim(ClaimTypes.Name, userName)
+                        new Claim(ClaimTypes.NameIdentifier, loginUser.Id),
+                        new Claim(ClaimTypes.Name, loginUser.UserName),
+                        new Claim(ClaimTypes.Email, loginUser.Email)
                     }),
-                Expires = DateTime.UtcNow.AddHours(1),
+                Expires = DateTime.UtcNow.AddMinutes(5),
                 SigningCredentials = new SigningCredentials(
                     new SymmetricSecurityKey(tokenKey), SecurityAlgorithms.HmacSha256Signature)
             };

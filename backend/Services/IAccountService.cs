@@ -1,3 +1,5 @@
+using MyWeb.Models;
+
 namespace MyWeb.Services
 {
     public interface IAccountService
@@ -5,10 +7,10 @@ namespace MyWeb.Services
         /// <summary>
         /// Generate JWT token and return token string
         /// </summary>
-        /// <param name="userName">User Name</param>
+        /// <param name="loginUser">Login User</param>
         /// <returns>
         /// Return token string
         /// </returns>
-        string GenerateJwtToken(string userName);
+        string GenerateJwtToken(LoginUser loginUser);
     }
 }

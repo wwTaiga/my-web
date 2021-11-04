@@ -1,5 +1,8 @@
+using System;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MyWeb.Dtos;
@@ -10,6 +13,7 @@ namespace MyWeb.Controllers
 {
     [Route("account")]
     [ApiController]
+    [Authorize]
     public class AccountController : ControllerBase
     {
 
@@ -30,6 +34,7 @@ namespace MyWeb.Controllers
         }
 
         [HttpPost("login")]
+        [AllowAnonymous]
         public async Task<ActionResult> DoLogin(LoginDto loginDto)
         {
             LoginUser loginUser = await _repoService.LoginUser
@@ -50,10 +55,17 @@ namespace MyWeb.Controllers
             }
 
             var signInResult = await _signInManager
-                .CheckPasswordSignInAsync(loginUser, loginDto.password, false);
+                .PasswordSignInAsync(loginUser, loginDto.password, false, false);
             if (signInResult.Succeeded)
             {
-                var tokenString = _accountService.GenerateJwtToken(loginUser.UserName);
+                var tokenString = _accountService.GenerateJwtToken(loginUser);
+
+                Response.Cookies.Append("jwt", tokenString, new CookieOptions
+                {
+                    HttpOnly = true,
+                    Expires = DateTime.UtcNow.AddMinutes(5),
+                });
+
                 var response = new
                 {
                     status = "success",
@@ -80,6 +92,7 @@ namespace MyWeb.Controllers
         }
 
         [HttpPost("register")]
+        [AllowAnonymous]
         public async Task<ActionResult> DoRegister(RegisterDto registerDto)
         {
             LoginUser newUser = new()
@@ -105,6 +118,19 @@ namespace MyWeb.Controllers
                 }
                 return Ok(sb.ToString());
             }
+        }
+
+        [HttpPost("logout")]
+        public async Task<ActionResult> DoLogout()
+        {
+            Response.Cookies.Append("jwt", "", new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = DateTime.UtcNow.AddMinutes(5),
+            });
+            await _signInManager.SignOutAsync();
+
+            return Ok("Success");
         }
     }
 }

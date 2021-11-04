@@ -1,17 +1,11 @@
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MyWeb.Data;
-using MyWeb.Models;
 using MyWeb.Settings;
 
 namespace MyWeb
@@ -36,45 +30,13 @@ namespace MyWeb
                 options.UseNpgsql(settings.ConnectionString);
             });
 
-            services.AddAuthentication(x =>
-            {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(x =>
-            {
-                x.Events = new JwtBearerEvents
-                {
-                    OnTokenValidated = context =>
-                    {
-                        var userMachine = context.HttpContext.RequestServices
-                                .GetRequiredService<UserManager<LoginUser>>();
-                        var user = userMachine.GetUserAsync(context.HttpContext.User);
-
-                        if (user is null)
-                        {
-                            context.Fail("UnAuthorized");
-                        }
-
-                        return Task.CompletedTask;
-                    }
-                };
-                x.RequireHttpsMetadata = false;
-                x.SaveToken = true;
-                x.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(
-                            Encoding.ASCII.GetBytes(Configuration["Jwt:Key"])),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
-                };
-            });
+            services.ConfigureAuthentication(Configuration);
 
             services.AddCors(o => o.AddPolicy(name: _allowCors,
                 builder =>
                 {
                     builder.WithOrigins("http://localhost:3000")
+                        .AllowCredentials()
                         .AllowAnyMethod()
                         .AllowAnyHeader();
                 }));
