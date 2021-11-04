@@ -2,7 +2,7 @@ using MyWeb.Models.Entities;
 
 namespace MyWeb.Services
 {
-    public interface IAccountService
+    public interface IJwtTokenService
     {
         /// <summary>
         /// Generate JWT token and return token string

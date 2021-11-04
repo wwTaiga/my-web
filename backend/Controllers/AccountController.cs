@@ -17,12 +17,12 @@ namespace MyWeb.Controllers
     public class AccountController : ControllerBase
     {
 
-        private readonly IAccountService _accountService;
+        private readonly IJwtTokenService _accountService;
         private readonly IRepoService _repoService;
         private readonly UserManager<LoginUser> _userManager;
         private readonly SignInManager<LoginUser> _signInManager;
 
-        public AccountController(IAccountService accountService,
+        public AccountController(IJwtTokenService accountService,
                 IRepoService repoService,
                 UserManager<LoginUser> userManager,
                 SignInManager<LoginUser> signInManager)

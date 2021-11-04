@@ -8,11 +8,11 @@ using MyWeb.Models.Entities;
 
 namespace MyWeb.Services
 {
-    public class AccountService : IAccountService
+    public class JwtTokenService : IJwtTokenService
     {
         private readonly IConfiguration _config;
 
-        public AccountService(IConfiguration config)
+        public JwtTokenService(IConfiguration config)
         {
             _config = config;
         }
@@ -28,7 +28,6 @@ namespace MyWeb.Services
                     {
                         new Claim(ClaimTypes.NameIdentifier, loginUser.Id),
                         new Claim(ClaimTypes.Name, loginUser.UserName),
-                        new Claim(ClaimTypes.Email, loginUser.Email)
                     }),
                 Expires = DateTime.UtcNow.AddMinutes(5),
                 SigningCredentials = new SigningCredentials(
