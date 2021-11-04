@@ -2,7 +2,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MyWeb.Data;
-using MyWeb.Models;
+using MyWeb.Models.Entities;
 
 namespace MyWeb.Repositories
 {

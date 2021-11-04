@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
-using MyWeb.Dtos;
+using MyWeb.Models.Dtos;
 
-namespace MyWeb.Models
+namespace MyWeb.Models.Entities
 {
     public class LoginUser : IdentityUser
     {

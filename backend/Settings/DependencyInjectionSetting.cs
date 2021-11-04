@@ -5,7 +5,7 @@ using MyWeb.Services;
 
 namespace MyWeb.Settings
 {
-    public static class DependencyInjection
+    public static class DependencyInjectionSetting
     {
         public static void AddRepositories(this IServiceCollection services)
         {

@@ -1,4 +1,4 @@
-using MyWeb.Models;
+using MyWeb.Models.Entities;
 
 namespace MyWeb.Services
 {

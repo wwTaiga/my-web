@@ -1,7 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using MyWeb.Models;
+using MyWeb.Models.Entities;
 
 namespace MyWeb.Data
 {

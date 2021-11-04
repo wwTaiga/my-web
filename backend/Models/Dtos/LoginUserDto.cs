@@ -1,4 +1,4 @@
-namespace MyWeb.Dtos
+namespace MyWeb.Models.Dtos
 {
     public record LoginUserDto(string Id, string Username);
 

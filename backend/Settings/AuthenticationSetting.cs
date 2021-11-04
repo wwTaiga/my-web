@@ -6,13 +6,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using MyWeb.Data;
-using MyWeb.Models;
+using MyWeb.Models.Entities;
 
 namespace MyWeb.Settings
 {
-    public static class AuthenticationSettings
+    public static class AuthenticationSetting
     {
-        public static void ConfigureAuthentication(this IServiceCollection services, IConfiguration configuration)
+        public static void AddAuthentications(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddAuthentication(x =>
             {

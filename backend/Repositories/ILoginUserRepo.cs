@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using MyWeb.Models;
+using MyWeb.Models.Entities;
 
 namespace MyWeb.Repositories
 {

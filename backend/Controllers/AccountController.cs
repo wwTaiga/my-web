@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using MyWeb.Dtos;
-using MyWeb.Models;
+using MyWeb.Models.Dtos;
+using MyWeb.Models.Entities;
 using MyWeb.Services;
 
 namespace MyWeb.Controllers

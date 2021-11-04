@@ -30,7 +30,7 @@ namespace MyWeb
                 options.UseNpgsql(settings.ConnectionString);
             });
 
-            services.ConfigureAuthentication(Configuration);
+            services.AddAuthentications(Configuration);
 
             services.AddCors(o => o.AddPolicy(name: _allowCors,
                 builder =>
