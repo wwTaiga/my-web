@@ -30,7 +30,11 @@ const LoginForm = (): JSX.Element => {
     const doLogin = (input: Input) => {
         const options = {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include' as RequestCredentials,
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Credentials': 'true',
+            },
             body: JSON.stringify(input),
         };
 
@@ -48,6 +52,36 @@ const LoginForm = (): JSX.Element => {
                     alert(data.error.message);
                 }
             });
+    };
+
+    const logout = () => {
+        const options = {
+            method: 'POST',
+            credentials: 'include' as RequestCredentials,
+            headers: { 'Content-Type': 'application/json' },
+        };
+
+        fetch('http://localhost:5000/account/logout', options).then(
+            (response) => {
+                if (response.ok) {
+                    console.log(response);
+                }
+            },
+        );
+    };
+
+    const test = () => {
+        const options = {
+            method: 'GET',
+            credentials: 'include' as RequestCredentials,
+            headers: { 'Content-Type': 'application/json' },
+        };
+
+        fetch('http://localhost:5000/users', options).then((response) => {
+            if (response.ok) {
+                console.log(response);
+            }
+        });
     };
 
     return (
@@ -117,6 +151,27 @@ const LoginForm = (): JSX.Element => {
                                     }}
                                 >
                                     Sign in
+                                </Button>
+
+                                <Button
+                                    bg={'blue.400'}
+                                    color={'white'}
+                                    _hover={{
+                                        bg: 'blue.500',
+                                    }}
+                                    onClick={test}
+                                >
+                                    Test
+                                </Button>
+                                <Button
+                                    bg={'blue.400'}
+                                    color={'white'}
+                                    _hover={{
+                                        bg: 'blue.500',
+                                    }}
+                                    onClick={logout}
+                                >
+                                    Test
                                 </Button>
                             </Stack>
                         </form>
