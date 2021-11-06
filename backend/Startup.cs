@@ -12,7 +12,6 @@ namespace MyWeb
 {
     public class Startup
     {
-        private readonly string _allowCors = "AllowLocalHost";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -28,18 +27,14 @@ namespace MyWeb
                 var settings = Configuration.GetSection(nameof(PostgresDbSettings))
                     .Get<PostgresDbSettings>();
                 options.UseNpgsql(settings.ConnectionString);
+
+                options.UseOpenIddict();
             });
 
-            services.AddAuthentications(Configuration);
+            services.AddOpenIddictService();
 
-            services.AddCors(o => o.AddPolicy(name: _allowCors,
-                builder =>
-                {
-                    builder.WithOrigins("http://localhost:3000")
-                        .AllowCredentials()
-                        .AllowAnyMethod()
-                        .AllowAnyHeader();
-                }));
+
+            services.AddCors();
             services.AddRepositories();
             services.AddServices();
 
@@ -62,7 +57,11 @@ namespace MyWeb
 
             app.UseRouting();
 
-            app.UseCors(_allowCors);
+            app.UseCors(builder =>
+                builder.WithOrigins("http://localhost:3000")
+                    .AllowCredentials()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader());
 
             app.UseAuthentication();
             app.UseAuthorization();

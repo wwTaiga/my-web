@@ -4,9 +4,11 @@
 
 can download at https://dotnet.microsoft.com/download
 
-## install Entity Framework tools
+## install Entity Framework tool and Format tool
 
 dotnet tool install --global dotnet-ef
+<br>
+dotnet tool install --global dotnet-format
 
 # Some dotnet commands
 
