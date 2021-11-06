@@ -31,8 +31,10 @@ namespace MyWeb
                 options.UseOpenIddict();
             });
 
+            // User management
+            services.AddIdentityService();
+            // Authentication and authorization
             services.AddOpenIddictService();
-
 
             services.AddCors();
             services.AddRepositories();

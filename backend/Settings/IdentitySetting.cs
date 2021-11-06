@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using MyWeb.Data;
 using MyWeb.Models.Entities;
-using static OpenIddict.Abstractions.OpenIddictConstants;
 
 namespace MyWeb.Settings
 {
@@ -12,14 +11,9 @@ namespace MyWeb.Settings
         {
             services.AddIdentity<LoginUser, IdentityRole>()
                 .AddEntityFrameworkStores<DataContext>()
-                .AddDefaultTokenProviders();
+                .AddDefaultTokenProviders()
+                .AddSignInManager();
 
-            services.Configure<IdentityOptions>(options =>
-            {
-                options.ClaimsIdentity.UserNameClaimType = Claims.Name;
-                options.ClaimsIdentity.UserIdClaimType = Claims.Subject;
-                options.ClaimsIdentity.RoleClaimType = Claims.Role;
-            });
         }
     }
 }
