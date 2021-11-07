@@ -1,9 +1,7 @@
-
-using System;
+using System;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using MyWeb.Data;
-using OpenIddict.Abstractions;
 using OpenIddict.Quartz;
 using OpenIddict.Validation.AspNetCore;
 using static OpenIddict.Abstractions.OpenIddictConstants;

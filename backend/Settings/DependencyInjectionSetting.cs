@@ -17,7 +17,7 @@ namespace MyWeb.Settings
 
         public static void AddServices(this IServiceCollection services)
         {
-            services.AddScoped<IJwtTokenService, JwtTokenService>();
+            services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IRepoService, RepoService>();
         }
     }
