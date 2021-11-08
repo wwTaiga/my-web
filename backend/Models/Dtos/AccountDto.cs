@@ -1,6 +1,15 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace MyWeb.Models.Dtos
 {
-    public record LoginDto(string userName, string password);
-
-    public record RegisterDto(string userName, string password, string email);
+    /// <summary>
+    /// Use for register a new user
+    /// </summary>
+    /// <param name="userName">User Name</param>
+    /// <param name="password">Password</param>
+    /// <param name="email">Email</param>
+    public record RegisterDto(
+        [Required] string userName,
+        [Required] string password,
+        [Required] string email);
 }

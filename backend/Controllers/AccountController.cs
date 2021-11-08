@@ -40,6 +40,12 @@ namespace MyWeb.Controllers
             _signInManager = signInManager;
         }
 
+        /// <summary>
+        /// Register a new user
+        /// </summary>
+        /// <param name="registerDto"></param>
+        /// <response code="200">Return success message</response>
+        /// <response code="403">Return error messages</response>
         [HttpPost("register")]
         [AllowAnonymous]
         public async Task<ActionResult> DoRegister(RegisterDto registerDto)
