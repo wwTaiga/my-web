@@ -14,3 +14,14 @@ export interface AuthToken {
     token_type: string;
     expires_in: number;
 }
+
+export interface Result {
+    isSuccess: boolean;
+    errorDesc?: string;
+}
+
+export interface AuthTokenError {
+    error: string;
+    error_description: string;
+    error_uri: string;
+}

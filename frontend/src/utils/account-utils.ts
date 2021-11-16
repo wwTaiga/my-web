@@ -1,29 +1,32 @@
-import { AuthToken, PasswordModel, RefreshModel } from 'types';
+import { AuthToken, AuthTokenError, PasswordModel, RefreshModel, Result } from 'types';
 import { getTokenUrl } from 'utils/url-utils';
 
-export const doRefresh = async (): Promise<boolean> => {
+export const doRefresh = async (): Promise<Result> => {
     const authToken = retrieveToken();
     if (authToken == null || authToken.refresh_token == null) {
-        return false;
+        return { isSuccess: false, errorDesc: 'Refresh token not found.' };
     }
-
     const refreshToken: RefreshModel = { refresh_token: authToken.refresh_token };
-
-    return await getToken(refreshToken, 'refresh_token');
+    const result = await getToken(refreshToken, 'refresh_token');
+    if (!result.isSuccess) {
+        removeToken();
+    }
+    return result;
 };
 
-export const doLogin = async (username: string, password: string): Promise<boolean | string> => {
+export const doLogin = async (username: string, password: string): Promise<Result> => {
     const loginForm: PasswordModel = {
         username: username,
         password: password,
     };
-    return await getToken(loginForm, 'password');
+    const result = await getToken(loginForm, 'password');
+    if (result) {
+        scheduleRefresh();
+    }
+    return result;
 };
 
-const getToken = async (
-    data: RefreshModel | PasswordModel,
-    grantType: string,
-): Promise<boolean> => {
+const getToken = async (data: RefreshModel | PasswordModel, grantType: string): Promise<Result> => {
     Object.assign(data, {
         grant_type: grantType,
         scope: 'openid offline_access',
@@ -44,13 +47,16 @@ const getToken = async (
     };
     const response = await fetch(getTokenUrl(), options);
 
-    if (!response.ok) {
-        return false;
+    if (response.status == 400) {
+        const result: AuthTokenError = await response.json();
+        return { isSuccess: false, errorDesc: result.error_description };
+    } else if (!response.ok) {
+        return { isSuccess: false, errorDesc: await response.json() };
     }
     const newToken: AuthToken = await response.json();
     saveToken(newToken);
 
-    return true;
+    return { isSuccess: true };
 };
 
 const saveToken = (newToken: AuthToken) => {
@@ -62,8 +68,24 @@ const saveToken = (newToken: AuthToken) => {
     localStorage.setItem('authToken', JSON.stringify(newToken));
 };
 
-const retrieveToken = (): AuthToken | null => {
-    const tokenString = localStorage.getItem('authToken');
-    const token: AuthToken = tokenString == null ? null : JSON.parse(tokenString);
-    return token;
+export const retrieveToken = (): AuthToken | null => {
+    const authTokenString = localStorage.getItem('authToken');
+    const authToken: AuthToken = authTokenString == null ? null : JSON.parse(authTokenString);
+    return authToken;
+};
+
+export const removeToken = (): void => {
+    localStorage.removeItem('authToken');
+};
+
+const scheduleRefresh = (): void => {
+    const authToken = retrieveToken();
+    if (authToken != null && authToken.refresh_token != null) {
+        setTimeout(async () => {
+            const result = await doRefresh();
+            if (result.isSuccess) {
+                scheduleRefresh();
+            }
+        }, (authToken.expires_in - 20) * 1000);
+    }
 };
