@@ -1,23 +1,7 @@
-import s from '../app-settings.json';
+import { AuthToken, PasswordModel, RefreshModel } from 'types';
+import { getTokenUrl } from 'utils/url-utils';
 
-interface RefreshModel {
-    refresh_token: string;
-}
-
-interface PasswordModel {
-    username: string;
-    password: string;
-}
-
-interface AuthToken {
-    access_token: string;
-    refresh_token?: string;
-    id_token: string;
-    token_type: string;
-    expires_in: number;
-}
-
-const doRefresh = async (): Promise<boolean> => {
+export const doRefresh = async (): Promise<boolean> => {
     const authToken = retrieveToken();
     if (authToken == null || authToken.refresh_token == null) {
         return false;
@@ -28,7 +12,7 @@ const doRefresh = async (): Promise<boolean> => {
     return await getToken(refreshToken, 'refresh_token');
 };
 
-const doLogin = async (username: string, password: string): Promise<boolean | string> => {
+export const doLogin = async (username: string, password: string): Promise<boolean | string> => {
     const loginForm: PasswordModel = {
         username: username,
         password: password,
@@ -58,7 +42,7 @@ const getToken = async (
         },
         body: new URLSearchParams(params),
     };
-    const response = await fetch(s.domain + s.version + s.url.account.getToken, options);
+    const response = await fetch(getTokenUrl(), options);
 
     if (!response.ok) {
         return false;
@@ -83,5 +67,3 @@ const retrieveToken = (): AuthToken | null => {
     const token: AuthToken = tokenString == null ? null : JSON.parse(tokenString);
     return token;
 };
-
-export { doLogin, doRefresh, retrieveToken };

@@ -1,0 +1,9 @@
+{
+    "api": {
+        "core": {
+            "domain": "http://localhost:5000",
+            "contextPath": "",
+            "defaultVersion": ""
+        }
+    }
+}
