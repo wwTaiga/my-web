@@ -14,6 +14,9 @@ import {
     FormErrorMessage,
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
+import { setIsLoggedIn } from 'store/account/accountSlice';
+import { doLogin } from 'utils/account-utils';
 
 interface Input {
     username: string;
@@ -27,61 +30,17 @@ const LoginForm = (): JSX.Element => {
         formState: { errors },
     } = useForm();
 
-    const doLogin = (input: Input) => {
-        const options = {
-            method: 'POST',
-            credentials: 'include' as RequestCredentials,
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Credentials': 'true',
-            },
-            body: JSON.stringify(input),
-        };
+    const dispatch = useDispatch();
 
-        fetch('http://localhost:5000/account/login', options)
-            .then((response) => {
-                if (response.ok) {
-                    return response.json();
-                }
-                throw response;
-            })
-            .then((data) => {
-                if (data.status == 'success') {
-                    alert(data.data.token);
-                } else {
-                    alert(data.error.message);
-                }
-            });
-    };
-
-    const logout = () => {
-        const options = {
-            method: 'POST',
-            credentials: 'include' as RequestCredentials,
-            headers: { 'Content-Type': 'application/json' },
-        };
-
-        fetch('http://localhost:5000/account/logout', options).then(
-            (response) => {
-                if (response.ok) {
-                    console.log(response);
-                }
-            },
-        );
-    };
-
-    const test = () => {
-        const options = {
-            method: 'GET',
-            credentials: 'include' as RequestCredentials,
-            headers: { 'Content-Type': 'application/json' },
-        };
-
-        fetch('http://localhost:5000/users', options).then((response) => {
-            if (response.ok) {
-                console.log(response);
-            }
-        });
+    const login = async (input: Input): Promise<void> => {
+        const result = await doLogin(input.username, input.password);
+        if (result.isSuccess) {
+            dispatch(setIsLoggedIn(true));
+            alert('success');
+        } else {
+            dispatch(setIsLoggedIn(false));
+            alert(result.errorDesc);
+        }
     };
 
     return (
@@ -95,8 +54,7 @@ const LoginForm = (): JSX.Element => {
                 <Stack align={'center'}>
                     <Heading fontSize={'4xl'}>Sign in to your account</Heading>
                     <Text fontSize={'lg'} color={'gray.600'}>
-                        to enjoy all of our cool{' '}
-                        <Link color={'blue.400'}>features</Link> ✌️
+                        to enjoy all of our cool <Link color={'blue.400'}>features</Link> ✌️
                     </Text>
                 </Stack>
                 <Box
@@ -106,17 +64,17 @@ const LoginForm = (): JSX.Element => {
                     p={8}
                 >
                     <Stack spacing={4}>
-                        <form onSubmit={handleSubmit(doLogin)}>
-                            <FormControl isInvalid={errors.userName}>
+                        <form onSubmit={handleSubmit(login)}>
+                            <FormControl isInvalid={errors.username}>
                                 <FormLabel>User Name</FormLabel>
                                 <Input
                                     type="text"
-                                    {...register('userName', {
+                                    {...register('username', {
                                         required: 'This is required',
                                     })}
                                 />
                                 <FormErrorMessage>
-                                    {errors.userName && errors.userName.message}
+                                    {errors.username && errors.username.message}
                                 </FormErrorMessage>
                             </FormControl>
                             <FormControl isInvalid={errors.password}>
@@ -138,9 +96,7 @@ const LoginForm = (): JSX.Element => {
                                     justify={'space-between'}
                                 >
                                     <Checkbox>Remember me</Checkbox>
-                                    <Link color={'blue.400'}>
-                                        Forgot password?
-                                    </Link>
+                                    <Link color={'blue.400'}>Forgot password?</Link>
                                 </Stack>
                                 <Button
                                     type="submit"
@@ -151,27 +107,6 @@ const LoginForm = (): JSX.Element => {
                                     }}
                                 >
                                     Sign in
-                                </Button>
-
-                                <Button
-                                    bg={'blue.400'}
-                                    color={'white'}
-                                    _hover={{
-                                        bg: 'blue.500',
-                                    }}
-                                    onClick={test}
-                                >
-                                    Test
-                                </Button>
-                                <Button
-                                    bg={'blue.400'}
-                                    color={'white'}
-                                    _hover={{
-                                        bg: 'blue.500',
-                                    }}
-                                    onClick={logout}
-                                >
-                                    Test
                                 </Button>
                             </Stack>
                         </form>
