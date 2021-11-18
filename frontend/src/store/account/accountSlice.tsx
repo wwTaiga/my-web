@@ -1,23 +1,24 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { retrieveToken } from 'utils/account-utils';
 
 interface AccountState {
-    token: string;
+    isLoggedIn: boolean;
 }
 
 const initialState: AccountState = {
-    token: '',
+    isLoggedIn: retrieveToken() != null ? true : false,
 };
 
 export const accountSlice = createSlice({
     name: 'account',
     initialState,
     reducers: {
-        saveAccount: (state, action: PayloadAction<string>) => {
-            state.token = action.payload;
+        setIsLoggedIn: (state, action: PayloadAction<boolean>) => {
+            state.isLoggedIn = action.payload;
         },
     },
 });
 
-export const { saveAccount } = accountSlice.actions;
+export const { setIsLoggedIn } = accountSlice.actions;
 
 export default accountSlice.reducer;
