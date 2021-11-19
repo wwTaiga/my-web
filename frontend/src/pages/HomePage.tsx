@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 
-export default function CallToActionWithAnnotation(): JSX.Element {
+export default function HomePage(): JSX.Element {
     return (
         <>
             <Container maxW={'3xl'}>

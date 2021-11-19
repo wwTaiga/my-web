@@ -14,8 +14,8 @@ import {
     FormErrorMessage,
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
 import { setIsLoggedIn } from 'store/account/accountSlice';
+import { useAppDispatch } from 'store/hooks';
 import { doLogin } from 'utils/account-utils';
 
 interface Input {
@@ -30,7 +30,7 @@ const LoginForm = (): JSX.Element => {
         formState: { errors },
     } = useForm();
 
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     const login = async (input: Input): Promise<void> => {
         const result = await doLogin(input.username, input.password);
