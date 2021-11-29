@@ -12,7 +12,7 @@ namespace MyWeb.Controllers
 {
     [Route("users")]
     [ApiController]
-    [Authorize]
+    [Authorize, Authorize(Roles = "Admin")]
     public class LoginUserController : ControllerBase
     {
         private readonly IRepoService _repoService;

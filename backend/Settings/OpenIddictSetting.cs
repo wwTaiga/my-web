@@ -39,7 +39,8 @@ namespace MyWeb.Settings
 
                     // Add scope/permission, to allow client request the info
                     options.RegisterScopes(
-                        Scopes.Profile
+                        Scopes.Profile,
+                        Scopes.Roles
                     );
 
                     // Set the timespan for reuse refresh still can be reuse after redeem

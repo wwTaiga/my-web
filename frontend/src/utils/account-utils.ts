@@ -57,7 +57,7 @@ export const doLogin = async (username: string, password: string): Promise<Resul
 const getToken = async (data: RefreshModel | PasswordModel, grantType: string): Promise<Result> => {
     Object.assign(data, {
         grant_type: grantType,
-        scope: 'openid offline_access',
+        scope: 'openid offline_access profile roles',
         rememberme: 'true',
     });
 
