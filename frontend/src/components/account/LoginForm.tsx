@@ -13,9 +13,11 @@ import {
     useColorModeValue,
     FormErrorMessage,
 } from '@chakra-ui/react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 import { setIsLoggedIn } from 'store/account/accountSlice';
-import { useAppDispatch } from 'store/hooks';
+import { useAppDispatch, useAppSelector } from 'store/hooks';
 import { doLogin } from 'utils/account-utils';
 
 interface Input {
@@ -24,19 +26,27 @@ interface Input {
 }
 
 const LoginForm = (): JSX.Element => {
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
+    const isLoggedIn = useAppSelector((state) => state.account.isLoggedIn);
+
+    useEffect(() => {
+        if (isLoggedIn) {
+            navigate('/home', { replace: true });
+        }
+    }, []);
+
     const {
         register,
         handleSubmit,
         formState: { errors },
     } = useForm();
 
-    const dispatch = useAppDispatch();
-
     const login = async (input: Input): Promise<void> => {
         const result = await doLogin(input.username, input.password);
         if (result.isSuccess) {
             dispatch(setIsLoggedIn(true));
-            alert('success');
+            navigate('/home');
         } else {
             dispatch(setIsLoggedIn(false));
             alert(result.errorDesc);

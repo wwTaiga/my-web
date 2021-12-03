@@ -1,8 +1,6 @@
 import { AuthToken, AuthTokenError, PasswordModel, RefreshModel, Result } from 'types';
 import { getTokenUrl } from 'utils/url-utils';
 import { handleFetchError } from 'utils/fetch-utils';
-import { useAppDispatch } from 'store/hooks';
-import { setIsLoggedIn } from 'store/account/accountSlice';
 
 /**
  * If refresh token exist in local storage, use it token to get a new access token and refresh
@@ -115,14 +113,10 @@ export const retrieveToken = (): AuthToken | null => {
 };
 
 /**
- * Remove tokens object from local storage and set IsLoggedIn (Redux state) to
- * false.
+ * Remove tokens object from local storage.
  **/
 export const removeToken = (): void => {
     localStorage.removeItem('authToken');
-
-    const dispatch = useAppDispatch();
-    dispatch(setIsLoggedIn(false));
 };
 
 /**

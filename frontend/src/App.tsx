@@ -7,7 +7,7 @@ import HomePage from 'pages/HomePage';
 import ProtectedRoute from 'components/Router/ProtectedRoute';
 import Test from 'pages/Test';
 
-function App(): JSX.Element {
+const App = (): JSX.Element => {
     useEffect(() => {
         const startupRefreshToken = async (): Promise<void> => {
             const result = await doRefresh();
@@ -25,12 +25,12 @@ function App(): JSX.Element {
             <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/login" element={<LoginForm />} />
-                <Route path="/private" element={<ProtectedRoute />}>
-                    <Route path="/private" element={<Test />} />
+                <Route path="/home" element={<ProtectedRoute />}>
+                    <Route path="/home" element={<Test />} />
                 </Route>
             </Routes>
         </>
     );
-}
+};
 
 export default App;
