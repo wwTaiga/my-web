@@ -34,6 +34,8 @@ namespace MyWeb
                 options.UseOpenIddict();
             });
 
+            // Quartz job
+            services.AddQuartzService();
             // User management
             services.AddIdentityService();
             // Authentication and authorization
