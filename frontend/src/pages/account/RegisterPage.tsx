@@ -25,7 +25,7 @@ interface Input {
     password: string;
 }
 
-const LoginForm = (): JSX.Element => {
+const RegisterPage = (): JSX.Element => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const isLoggedIn = useAppSelector((state) => state.account.isLoggedIn);
@@ -43,14 +43,15 @@ const LoginForm = (): JSX.Element => {
     } = useForm();
 
     const login = async (input: Input): Promise<void> => {
-        const result = await doLogin(input.username, input.password);
-        if (result.isSuccess) {
-            dispatch(setIsLoggedIn(true));
-            navigate('/home');
-        } else {
-            dispatch(setIsLoggedIn(false));
-            alert(result.errorDesc);
-        }
+        return;
+        // const result = await doLogin(input.username, input.password);
+        // if (result.isSuccess) {
+        //     dispatch(setIsLoggedIn(true));
+        //     navigate('/home');
+        // } else {
+        //     dispatch(setIsLoggedIn(false));
+        //     alert(result.errorDesc);
+        // }
     };
 
     return (
@@ -62,7 +63,7 @@ const LoginForm = (): JSX.Element => {
         >
             <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
                 <Stack align={'center'}>
-                    <Heading fontSize={'4xl'}>Sign in to your account</Heading>
+                    <Heading fontSize={'4xl'}>Create your new account</Heading>
                     <Text fontSize={'lg'} color={'gray.600'}>
                         to enjoy all of our cool <Link color={'blue.400'}>features</Link> ✌️
                     </Text>
@@ -108,16 +109,26 @@ const LoginForm = (): JSX.Element => {
                                     <Checkbox>Remember me</Checkbox>
                                     <Link color={'blue.400'}>Forgot password?</Link>
                                 </Stack>
-                                <Button
-                                    type="submit"
-                                    bg={'blue.400'}
-                                    color={'white'}
-                                    _hover={{
-                                        bg: 'blue.500',
-                                    }}
+                                <Stack
+                                    direction={{ base: 'column', sm: 'row' }}
+                                    align={'start'}
+                                    justify={'space-between'}
                                 >
-                                    Sign in
-                                </Button>
+                                    <Link color={'blue.400'} onClick={() => navigate('/login')}>
+                                        Already have account? <br />
+                                        Go to Login
+                                    </Link>
+                                    <Button
+                                        type="submit"
+                                        bg={'blue.400'}
+                                        color={'white'}
+                                        _hover={{
+                                            bg: 'blue.500',
+                                        }}
+                                    >
+                                        Create account
+                                    </Button>
+                                </Stack>
                             </Stack>
                         </form>
                     </Stack>
@@ -127,4 +138,4 @@ const LoginForm = (): JSX.Element => {
     );
 };
 
-export default LoginForm;
+export default RegisterPage;

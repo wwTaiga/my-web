@@ -1,10 +1,12 @@
 export interface RefreshModel {
     refresh_token: string;
+    rememberMe: boolean;
 }
 
-export interface PasswordModel {
+export interface LoginModel {
     username: string;
     password: string;
+    rememberMe: boolean;
 }
 
 export interface AuthToken {
@@ -13,6 +15,7 @@ export interface AuthToken {
     id_token: string;
     token_type: string;
     expires_in: number;
+    rememberMe: boolean;
 }
 
 export interface Result {

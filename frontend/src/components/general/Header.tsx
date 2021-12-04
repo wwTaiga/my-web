@@ -105,7 +105,7 @@ const Header = (): JSX.Element => {
                             fontSize={'sm'}
                             fontWeight={400}
                             variant={'link'}
-                            href={'#'}
+                            onClick={() => navigate('/login')}
                         >
                             Sign In
                         </Button>
@@ -115,10 +115,10 @@ const Header = (): JSX.Element => {
                             fontWeight={600}
                             color={'white'}
                             bg={'pink.400'}
-                            href={'#'}
                             _hover={{
                                 bg: 'pink.300',
                             }}
+                            onClick={() => navigate('register')}
                         >
                             Sign Up
                         </Button>
@@ -306,7 +306,7 @@ const UserAvatar = (props: { logout: () => void }) => {
                     <MenuItem>Link 1</MenuItem>
                     <MenuItem>Link 2</MenuItem>
                     <MenuDivider />
-                    <MenuItem onClick={props.logout}>Link 3</MenuItem>
+                    <MenuItem onClick={props.logout}>Logout</MenuItem>
                 </MenuList>
             </Menu>
         </Stack>

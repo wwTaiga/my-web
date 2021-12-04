@@ -1,4 +1,4 @@
-import { AuthToken, AuthTokenError, PasswordModel, RefreshModel, Result } from 'types';
+import { AuthToken, AuthTokenError, LoginModel, RefreshModel, Result } from 'types';
 import { getTokenUrl } from 'utils/url-utils';
 import { handleFetchError } from 'utils/fetch-utils';
 
@@ -15,7 +15,10 @@ export const doRefresh = async (): Promise<Result> => {
     if (authToken == null || authToken.refresh_token == null) {
         return { isSuccess: false, errorDesc: 'Refresh token not found.' };
     }
-    const refreshToken: RefreshModel = { refresh_token: authToken.refresh_token };
+    const refreshToken: RefreshModel = {
+        refresh_token: authToken.refresh_token,
+        rememberMe: authToken.rememberMe,
+    };
     const result = await getToken(refreshToken, 'refresh_token');
     if (!result.isSuccess) {
         removeToken();
@@ -32,12 +35,8 @@ export const doRefresh = async (): Promise<Result> => {
  *
  * @returns Result promise
  **/
-export const doLogin = async (username: string, password: string): Promise<Result> => {
-    const loginForm: PasswordModel = {
-        username: username,
-        password: password,
-    };
-    const result = await getToken(loginForm, 'password');
+export const doLogin = async (loginModel: LoginModel): Promise<Result> => {
+    const result = await getToken(loginModel, 'password');
     if (result.isSuccess) {
         scheduleRefresh();
     }
@@ -52,11 +51,10 @@ export const doLogin = async (username: string, password: string): Promise<Resul
  *
  * @returns Result promise
  **/
-const getToken = async (data: RefreshModel | PasswordModel, grantType: string): Promise<Result> => {
+const getToken = async (data: LoginModel | RefreshModel, grantType: string): Promise<Result> => {
     Object.assign(data, {
         grant_type: grantType,
         scope: 'openid offline_access profile roles',
-        rememberme: 'true',
     });
 
     const params = new URLSearchParams();
@@ -82,6 +80,7 @@ const getToken = async (data: RefreshModel | PasswordModel, grantType: string): 
         return { isSuccess: false, errorDesc: response.status + ': ' + response.statusText };
     }
     const newToken: AuthToken = await response.json();
+    newToken.rememberMe = data.rememberMe;
     saveToken(newToken);
 
     return { isSuccess: true };
@@ -93,11 +92,6 @@ const getToken = async (data: RefreshModel | PasswordModel, grantType: string): 
  * @param newToken - The tokens object get from api core
  **/
 const saveToken = (newToken: AuthToken) => {
-    const previousToken = retrieveToken();
-    // For not rolling refresh token
-    if (previousToken != null && newToken.refresh_token == null) {
-        newToken.refresh_token == previousToken.refresh_token;
-    }
     localStorage.setItem('authToken', JSON.stringify(newToken));
 };
 
