@@ -131,6 +131,12 @@ namespace MyWeb.Controllers
                     claim.SetDestinations(_tokenService.GetDestinations(claim, principal));
                 }
 
+                bool rememberMe = (bool)request.GetParameter("rememberMe");
+                if (rememberMe)
+                {
+                    principal.SetRefreshTokenLifetime(TimeSpan.FromDays(15));
+                }
+
                 return SignIn(principal, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
             }
             else if (request.IsRefreshTokenGrantType())
@@ -172,6 +178,13 @@ namespace MyWeb.Controllers
                 {
                     claim.SetDestinations(_tokenService.GetDestinations(claim, principal));
                 }
+
+                bool rememberMe = (bool)request.GetParameter("rememberMe");
+                if (rememberMe)
+                {
+                    principal.SetRefreshTokenLifetime(TimeSpan.FromDays(15));
+                }
+
                 return SignIn(principal, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
             }
             throw new NotImplementedException("The specified grant type is not implemented.");
