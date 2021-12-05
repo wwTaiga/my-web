@@ -20,6 +20,8 @@ export interface AuthToken {
 
 export interface Result {
     isSuccess: boolean;
+    status?: number;
+    data?: unknown;
     errorDesc?: string;
 }
 
@@ -27,4 +29,14 @@ export interface AuthTokenError {
     error: string;
     error_description: string;
     error_uri: string;
+}
+
+export interface FetchParams {
+    method: 'GET' | 'POST' | 'PUT' | 'DELETE';
+    url: string;
+    body?: unknown;
+}
+
+export interface ErrorResponse {
+    errors: Record<string, string>;
 }
