@@ -75,9 +75,13 @@ const getToken = async (data: LoginModel | RefreshModel, grantType: string): Pro
 
     if (response.status == 400) {
         const result: AuthTokenError = await response.json();
-        return { isSuccess: false, errorDesc: result.error_description };
+        return { isSuccess: false, status: response.status, errorDesc: result.error_description };
     } else if (!response.ok) {
-        return { isSuccess: false, errorDesc: response.status + ': ' + response.statusText };
+        return {
+            isSuccess: false,
+            status: response.status,
+            errorDesc: response.statusText,
+        };
     }
     const newToken: AuthToken = await response.json();
     newToken.rememberMe = data.rememberMe;

@@ -12,10 +12,11 @@ import {
     Text,
     useColorModeValue,
     FormErrorMessage,
+    useToast,
 } from '@chakra-ui/react';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { setIsLoggedIn } from 'store/account/accountSlice';
 import { useAppDispatch, useAppSelector } from 'store/hooks';
 import { LoginModel } from 'types';
@@ -31,18 +32,18 @@ const LoginPage = (): JSX.Element => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const isLoggedIn = useAppSelector((state) => state.account.isLoggedIn);
+    const toast = useToast();
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm();
 
     useEffect(() => {
         if (isLoggedIn) {
             navigate('/home', { replace: true });
         }
     }, []);
-
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-    } = useForm();
 
     const login = async (input: LoginModel): Promise<void> => {
         const result = await doLogin(input);
@@ -51,7 +52,12 @@ const LoginPage = (): JSX.Element => {
             navigate('/home');
         } else {
             dispatch(setIsLoggedIn(false));
-            alert(result.errorDesc);
+            toast({
+                title: result.errorDesc,
+                position: 'top',
+                isClosable: true,
+                status: 'error',
+            });
         }
     };
 
@@ -115,7 +121,7 @@ const LoginPage = (): JSX.Element => {
                                     align={'start'}
                                     justify={'space-between'}
                                 >
-                                    <Link color={'blue.400'} onClick={() => navigate('/register')}>
+                                    <Link color={'blue.400'} as={RouterLink} to="/register">
                                         Create a new account
                                     </Link>
                                     <Button

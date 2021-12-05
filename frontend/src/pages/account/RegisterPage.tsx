@@ -12,13 +12,17 @@ import {
     Text,
     useColorModeValue,
     FormErrorMessage,
+    useToast,
 } from '@chakra-ui/react';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { setIsLoggedIn } from 'store/account/accountSlice';
 import { useAppDispatch, useAppSelector } from 'store/hooks';
+import { Result } from 'types';
 import { doLogin } from 'utils/account-utils';
+import { fetchWrapper } from 'utils/fetch-utils';
+import { getRegisterUrl } from 'utils/url-utils';
 
 interface Input {
     username: string;
@@ -29,6 +33,12 @@ const RegisterPage = (): JSX.Element => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const isLoggedIn = useAppSelector((state) => state.account.isLoggedIn);
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm();
+    const toast = useToast();
 
     useEffect(() => {
         if (isLoggedIn) {
@@ -36,22 +46,26 @@ const RegisterPage = (): JSX.Element => {
         }
     }, []);
 
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-    } = useForm();
-
-    const login = async (input: Input): Promise<void> => {
-        return;
-        // const result = await doLogin(input.username, input.password);
-        // if (result.isSuccess) {
-        //     dispatch(setIsLoggedIn(true));
-        //     navigate('/home');
-        // } else {
-        //     dispatch(setIsLoggedIn(false));
-        //     alert(result.errorDesc);
-        // }
+    const doRegister = async (input: Input): Promise<void> => {
+        input.username = '';
+        const result: Result = await fetchWrapper.post(getRegisterUrl(), input);
+        console.log(result.errorDesc);
+        if (result.isSuccess) {
+            toast({
+                title: 'Success',
+                position: 'top',
+                isClosable: true,
+                status: 'success',
+            });
+        } else {
+            toast({
+                title: 'Error',
+                description: result.errorDesc,
+                position: 'top',
+                isClosable: true,
+                status: 'error',
+            });
+        }
     };
 
     return (
@@ -75,7 +89,7 @@ const RegisterPage = (): JSX.Element => {
                     p={8}
                 >
                     <Stack spacing={4}>
-                        <form onSubmit={handleSubmit(login)}>
+                        <form onSubmit={handleSubmit(doRegister)}>
                             <FormControl isInvalid={errors.username}>
                                 <FormLabel>User Name</FormLabel>
                                 <Input
@@ -114,7 +128,7 @@ const RegisterPage = (): JSX.Element => {
                                     align={'start'}
                                     justify={'space-between'}
                                 >
-                                    <Link color={'blue.400'} onClick={() => navigate('/login')}>
+                                    <Link color={'blue.400'} as={RouterLink} to="/login">
                                         Already have account? <br />
                                         Go to Login
                                     </Link>

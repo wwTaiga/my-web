@@ -33,7 +33,7 @@ import {
 import { useAppDispatch, useAppSelector } from 'store/hooks';
 import { setIsLoggedIn } from 'store/account/accountSlice';
 import { removeToken } from 'utils/account-utils';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
 
 const Header = (): JSX.Element => {
     const { isOpen, onToggle } = useDisclosure();
@@ -101,15 +101,16 @@ const Header = (): JSX.Element => {
                             {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
                         </Button>
                         <Button
-                            as={'a'}
+                            as={RouterLink}
                             fontSize={'sm'}
                             fontWeight={400}
                             variant={'link'}
-                            onClick={() => navigate('/login')}
+                            to={'/login'}
                         >
                             Sign In
                         </Button>
                         <Button
+                            as={RouterLink}
                             display={{ base: 'none', md: 'inline-flex' }}
                             fontSize={'sm'}
                             fontWeight={600}
@@ -118,7 +119,7 @@ const Header = (): JSX.Element => {
                             _hover={{
                                 bg: 'pink.300',
                             }}
-                            onClick={() => navigate('register')}
+                            to="/register"
                         >
                             Sign Up
                         </Button>
