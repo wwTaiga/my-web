@@ -2,7 +2,6 @@ using System;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using MyWeb.Data;
-using OpenIddict.Quartz;
 using OpenIddict.Validation.AspNetCore;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
@@ -20,8 +19,14 @@ namespace MyWeb.Settings
                     options.UseEntityFrameworkCore()
                         .UseDbContext<DataContext>();
 
-                    // Configure OpenIddict to use Quartz to clean invalid and expired token
-                    options.UseQuartz();
+                    // Configure OpenIddict to use Quartz to clean invalid and expired token.
+                    // The job will run after 2 mins the app starts and run every hour if app is 
+                    // running.
+                    //
+                    // Token created more than MinimumTokenLifespan, default 14 days.
+                    // Authorization created more than MinimumAuthorizationLifeSpan, default 14 days
+                    options.UseQuartz()
+                        .SetMinimumTokenLifespan(TimeSpan.FromHours(1));
                 })
                 .AddServer(options =>
                 {
@@ -70,14 +75,6 @@ namespace MyWeb.Settings
                 options.ClaimsIdentity.UserNameClaimType = Claims.Name;
                 options.ClaimsIdentity.UserIdClaimType = Claims.Subject;
                 options.ClaimsIdentity.RoleClaimType = Claims.Role;
-            });
-
-            // Configure OpenIddict Quartz job to clean:
-            // Token created more than MinimumTokenLifespan, default 14 days
-            // Authorization created more than MinimumAuthorizationLifeSpan, default 14 days
-            services.Configure<OpenIddictQuartzOptions>(options =>
-            {
-                options.MinimumTokenLifespan = TimeSpan.FromHours(1);
             });
 
             // Use OpenIddict as default authentication scheme

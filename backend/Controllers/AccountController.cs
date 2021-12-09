@@ -13,8 +13,11 @@ using MyWeb.Models.Dtos;
 using MyWeb.Models.Entities;
 using MyWeb.Services;
 using OpenIddict.Abstractions;
+using OpenIddict.Core;
+using OpenIddict.EntityFrameworkCore.Models;
 using OpenIddict.Server.AspNetCore;
 using static OpenIddict.Abstractions.OpenIddictConstants;
+using static OpenIddict.Abstractions.OpenIddictConstants.Claims;
 
 namespace MyWeb.Controllers
 {
@@ -28,16 +31,19 @@ namespace MyWeb.Controllers
         private readonly IRepoService _repoService;
         private readonly UserManager<LoginUser> _userManager;
         private readonly SignInManager<LoginUser> _signInManager;
+        private readonly OpenIddictTokenManager<OpenIddictEntityFrameworkCoreToken> _tokenManager;
 
         public AccountController(ITokenService accountService,
                 IRepoService repoService,
                 UserManager<LoginUser> userManager,
-                SignInManager<LoginUser> signInManager)
+                SignInManager<LoginUser> signInManager,
+                OpenIddictTokenManager<OpenIddictEntityFrameworkCoreToken> tokenManager)
         {
             _tokenService = accountService;
             _repoService = repoService;
             _userManager = userManager;
             _signInManager = signInManager;
+            _tokenManager = tokenManager;
         }
 
         /// <summary>
@@ -77,7 +83,7 @@ namespace MyWeb.Controllers
 
         [HttpPost("~/connect/token")]
         [AllowAnonymous]
-        public async Task<IActionResult> DoLogin()
+        public async Task<IActionResult> ConnectToken()
         {
             var request = HttpContext.GetOpenIddictServerRequest();
             if (request.IsPasswordGrantType())
@@ -190,17 +196,20 @@ namespace MyWeb.Controllers
             throw new NotImplementedException("The specified grant type is not implemented.");
         }
 
+        /// <summary>
+        /// Sign out user and revoke all valid refresh token of the user.
+        /// </summary>
         [HttpPost("logout")]
         public async Task<ActionResult> DoLogout()
         {
-            Response.Cookies.Append("jwt", "", new CookieOptions
+            string authId = HttpContext.User.FindFirst(Private.AuthorizationId).Value;
+            await foreach (var token in _tokenManager.FindByAuthorizationIdAsync(authId))
             {
-                HttpOnly = true,
-                Expires = DateTime.UtcNow.AddMinutes(5),
-            });
+                await _tokenManager.TryRevokeAsync(token);
+            }
             await _signInManager.SignOutAsync();
 
-            return Ok("Success");
+            return Ok();
         }
     }
 }
