@@ -1,6 +1,7 @@
-import { AuthToken, AuthTokenError, LoginModel, RefreshModel, Result } from 'types';
+import { AuthToken, AuthTokenError, LoginModel, RefreshModel, Result, UserProfile } from 'types';
 import { getTokenUrl } from 'utils/url-utils';
 import { handleFetchError } from 'utils/fetch-utils';
+import jwtDecode from 'jwt-decode';
 
 /**
  * If refresh token exist in local storage, use it token to get a new access token and refresh
@@ -44,7 +45,8 @@ export const doLogin = async (loginModel: LoginModel): Promise<Result> => {
 };
 
 /**
- * Get access token and refresh token from core api, save tokens to local storage if success.
+ * Get access token and refresh token from core api, save tokens and user info to local storage
+ * if success.
  *
  * @params data - The required data that need for get tokens from core api
  * @params grantType - The workflow used to get the tokens
@@ -91,7 +93,7 @@ const getToken = async (data: LoginModel | RefreshModel, grantType: string): Pro
 };
 
 /**
- * Save tokens object to local storage with key 'authToken'.
+ * Save token object to local storage with key 'authToken'.
  *
  * @param newToken - The tokens object get from api core
  **/
@@ -111,7 +113,21 @@ export const retrieveToken = (): AuthToken | null => {
 };
 
 /**
- * Remove tokens object from local storage.
+ * Retrieve user profile from local storage.
+ *
+ * @returns User profile object if found else null
+ * */
+export const retrieveUserProfile = (): UserProfile | null => {
+    const token = retrieveToken();
+    if (token == null) {
+        return null;
+    }
+    const userProfile: UserProfile = jwtDecode(token.id_token);
+    return userProfile;
+};
+
+/**
+ * Remove tokens and object from local storage.
  **/
 export const removeToken = (): void => {
     localStorage.removeItem('authToken');

@@ -21,7 +21,7 @@ import { setIsLoggedIn } from 'store/account/accountSlice';
 import { useAppDispatch, useAppSelector } from 'store/hooks';
 import { Result } from 'types';
 import { doLogin } from 'utils/account-utils';
-import { fetchWrapper } from 'utils/fetch-utils';
+import { jsonFetch } from 'utils/fetch-utils';
 import { getRegisterUrl } from 'utils/url-utils';
 
 interface Input {
@@ -48,7 +48,7 @@ const RegisterPage = (): JSX.Element => {
 
     const doRegister = async (input: Input): Promise<void> => {
         input.username = '';
-        const result: Result = await fetchWrapper.post(getRegisterUrl(), input);
+        const result: Result = await jsonFetch.post(getRegisterUrl(), input);
         console.log(result.errorDesc);
         if (result.isSuccess) {
             toast({

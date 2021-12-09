@@ -24,3 +24,7 @@ export const getTokenUrl = (): string => {
 export const getRegisterUrl = (): string => {
     return getCoreBaseUrl() + '/account/register';
 };
+
+export const getLogoutUrl = (): string => {
+    return getCoreBaseUrl() + '/account/logout';
+};

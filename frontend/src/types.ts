@@ -18,6 +18,12 @@ export interface AuthToken {
     rememberMe: boolean;
 }
 
+export interface UserProfile {
+    sub: string;
+    name: string;
+    role: string;
+}
+
 export interface Result {
     isSuccess: boolean;
     status?: number;

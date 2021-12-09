@@ -34,6 +34,8 @@ import { useAppDispatch, useAppSelector } from 'store/hooks';
 import { setIsLoggedIn } from 'store/account/accountSlice';
 import { removeToken } from 'utils/account-utils';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
+import { jsonFetch } from 'utils/fetch-utils';
+import { getLogoutUrl } from 'utils/url-utils';
 
 const Header = (): JSX.Element => {
     const { isOpen, onToggle } = useDisclosure();
@@ -43,6 +45,7 @@ const Header = (): JSX.Element => {
     const navigate = useNavigate();
 
     const logout = (): void => {
+        jsonFetch.post(getLogoutUrl(), null);
         removeToken();
         dispatch(setIsLoggedIn(false));
         navigate('/');
@@ -81,6 +84,7 @@ const Header = (): JSX.Element => {
                         })}
                         fontFamily={'heading'}
                         color={useColorModeValue('gray.800', 'white')}
+                        onClick={() => navigate('/')}
                     >
                         Logo
                     </Text>
@@ -125,7 +129,7 @@ const Header = (): JSX.Element => {
                         </Button>
                     </Stack>
                 ) : (
-                    <UserAvatar logout={logout} />
+                    <UserAvatar logout={logout} navigate={navigate} />
                 )}
             </Flex>
 
@@ -285,7 +289,7 @@ const MobileNavItem = ({ label, children, href }: NavItem) => {
     );
 };
 
-const UserAvatar = (props: { logout: () => void }) => {
+const UserAvatar = (props: { logout: () => void; navigate: (url: string) => void }) => {
     return (
         <Stack flex={{ base: 1, md: 0 }} justify={'flex-end'} direction={'row'} spacing={6}>
             <Menu>
@@ -304,7 +308,7 @@ const UserAvatar = (props: { logout: () => void }) => {
                     />
                 </MenuButton>
                 <MenuList>
-                    <MenuItem>Link 1</MenuItem>
+                    <MenuItem onClick={() => props.navigate('/home')}>Link 1</MenuItem>
                     <MenuItem>Link 2</MenuItem>
                     <MenuDivider />
                     <MenuItem onClick={props.logout}>Logout</MenuItem>
