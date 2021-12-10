@@ -1,4 +1,4 @@
-namespace MyWeb.Settings
+namespace MyWeb.Models.Settings
 {
     public class PostgresDbSettings
     {

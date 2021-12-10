@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using MyWeb.Data;
+using MyWeb.Models.Settings;
 using MyWeb.Settings;
 
 namespace MyWeb
@@ -33,6 +34,9 @@ namespace MyWeb
 
                 options.UseOpenIddict();
             });
+
+            // Bind appsettings.json value to class
+            services.Configure<EmailSettings>(Configuration.GetSection(nameof(EmailSettings)));
 
             // Quartz job
             services.AddQuartzService();

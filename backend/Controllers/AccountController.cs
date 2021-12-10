@@ -27,18 +27,21 @@ namespace MyWeb.Controllers
     public class AccountController : ControllerBase
     {
 
+        private readonly IEmailService _emailService;
         private readonly ITokenService _tokenService;
         private readonly IRepoService _repoService;
         private readonly UserManager<LoginUser> _userManager;
         private readonly SignInManager<LoginUser> _signInManager;
         private readonly OpenIddictTokenManager<OpenIddictEntityFrameworkCoreToken> _tokenManager;
 
-        public AccountController(ITokenService accountService,
+        public AccountController(IEmailService emailService,
+                ITokenService accountService,
                 IRepoService repoService,
                 UserManager<LoginUser> userManager,
                 SignInManager<LoginUser> signInManager,
                 OpenIddictTokenManager<OpenIddictEntityFrameworkCoreToken> tokenManager)
         {
+            _emailService = emailService;
             _tokenService = accountService;
             _repoService = repoService;
             _userManager = userManager;
@@ -67,6 +70,13 @@ namespace MyWeb.Controllers
                     registerDto.password);
             if (result.Succeeded)
             {
+                var code = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
+                var callbackUrl = Url.Action(
+                    "ConfirmEmail", "Account",
+                    new { userId = newUser.Id, code = code },
+                    protocol: Request.Scheme);
+                await _emailService.sendEmailConfirmationEmailAsync(callbackUrl, newUser);
+
                 return Ok("User created");
             }
             else
@@ -105,11 +115,23 @@ namespace MyWeb.Controllers
                 var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, lockoutOnFailure: true);
                 if (!result.Succeeded)
                 {
+                    string error = "The username/password couple is invalid.";
+                    if (result.IsNotAllowed)
+                    {
+                        if (await _userManager.CheckPasswordAsync(user, request.Password) &&
+                                !await _userManager.IsEmailConfirmedAsync(user))
+                        {
+                            error = "Email isn't confirmed.";
+                        }
+                    }
+                    else if (result.IsLockedOut)
+                    {
+                        error = "Account is locked out.";
+                    }
                     var properties = new AuthenticationProperties(new Dictionary<string, string>
                     {
                         [OpenIddictServerAspNetCoreConstants.Properties.Error] = Errors.InvalidGrant,
-                        [OpenIddictServerAspNetCoreConstants.Properties.ErrorDescription] =
-                            "The username/password couple is invalid."
+                        [OpenIddictServerAspNetCoreConstants.Properties.ErrorDescription] = error
                     });
 
                     return Forbid(properties, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
@@ -210,6 +232,46 @@ namespace MyWeb.Controllers
             await _signInManager.SignOutAsync();
 
             return Ok();
+        }
+
+        [HttpPost("test")]
+        [AllowAnonymous]
+        public async Task<ActionResult> SendEmail()
+        {
+            var newUser = await _userManager.FindByIdAsync("71ea3f62-d3ab-4e2d-b303-ca5d58228f83");
+            if (newUser == null)
+                return Forbid();
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
+            var callbackUrl = Url.Action(
+                    nameof(ConfirmEmail),
+                    new { token, email = newUser.Email });
+            await _emailService.sendEmailConfirmationEmailAsync(callbackUrl, newUser);
+            return Ok();
+        }
+
+        [HttpGet("confirm-email")]
+        [AllowAnonymous]
+        public async Task<ActionResult> ConfirmEmail(string token, string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+                return BadRequest("Cannot find user");
+
+            var result = await _userManager.ConfirmEmailAsync(user, token);
+            if (result.Succeeded)
+            {
+                return Ok();
+            }
+            else
+            {
+                StringBuilder sb = new();
+                foreach (var error in result.Errors)
+                {
+                    sb.Append(error.Description);
+                }
+                return Forbid(sb.ToString());
+            }
+
         }
     }
 }
