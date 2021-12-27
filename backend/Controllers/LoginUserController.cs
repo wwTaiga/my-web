@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MyWeb.Constants;
 using MyWeb.Models.Dtos;
 using MyWeb.Models.Entities;
 using MyWeb.Services;
@@ -12,7 +13,7 @@ namespace MyWeb.Controllers
 {
     [Route("users")]
     [ApiController]
-    [Authorize, Authorize(Roles = "Admin")]
+    [Authorize, Authorize(Roles = Roles.SUPERADMIN + "," + Roles.ADMIN)]
     public class LoginUserController : ControllerBase
     {
         private readonly IRepoService _repoService;

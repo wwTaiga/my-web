@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using MyWeb.Constants;
 using MyWeb.Models.Entities;
 
 namespace MyWeb.Data.ExternalMasterData
@@ -15,7 +16,7 @@ namespace MyWeb.Data.ExternalMasterData
                 serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
                 var dataContext = serviceScope.ServiceProvider.GetService<DataContext>();
-                string[] roles = new[] { "Admin", "User" };
+                var roles = Roles.GetAllRoles();
 
                 foreach (string role in roles)
                 {
@@ -42,9 +43,9 @@ namespace MyWeb.Data.ExternalMasterData
 
 
                 LoginUser user = await userManager.FindByNameAsync("Admin");
-                if (!await userManager.IsInRoleAsync(user, "Admin"))
+                if (!await userManager.IsInRoleAsync(user, Roles.SUPERADMIN))
                 {
-                    await userManager.AddToRoleAsync(user, "Admin");
+                    await userManager.AddToRoleAsync(user, Roles.SUPERADMIN);
                 }
             }
         }

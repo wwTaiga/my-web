@@ -85,7 +85,7 @@ namespace MyWeb
                 endpoints.MapControllers();
             });
 
-            app.InitializeData();
+            app.InitializeDevData();
         }
     }
 }

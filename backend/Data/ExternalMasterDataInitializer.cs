@@ -5,7 +5,7 @@ namespace MyWeb.Data
 {
     public static class MasterDataExternalInitializer
     {
-        public static void InitializeData(this IApplicationBuilder app)
+        public static void InitializeDevData(this IApplicationBuilder app)
         {
             IdentityData.InitializeData(app.ApplicationServices).Wait();
         }
