@@ -13,7 +13,8 @@ namespace MyWeb.Controllers
 {
     [Route("users")]
     [ApiController]
-    [Authorize, Authorize(Roles = Roles.SUPERADMIN + "," + Roles.ADMIN)]
+    [Authorize]
+    [Authorize(Roles = Roles.SUPERADMIN + "," + Roles.ADMIN)]
     public class LoginUserController : ControllerBase
     {
         private readonly IRepoService _repoService;

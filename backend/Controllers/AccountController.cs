@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,7 +25,7 @@ namespace MyWeb.Controllers
     [Route("account")]
     [ApiController]
     [Authorize]
-    public class AccountController : ControllerBase
+    public class AccountController : MyControllerBase
     {
 
         private readonly IEmailService _emailService;
@@ -85,7 +86,7 @@ namespace MyWeb.Controllers
                 StringBuilder sb = new();
                 foreach (var error in result.Errors)
                 {
-                    sb.Append(error.Description);
+                    sb.Append(error.Code + ": " + error.Description);
                 }
                 return Ok(sb.ToString());
             }
@@ -251,7 +252,7 @@ namespace MyWeb.Controllers
 
         [HttpGet("confirm-email")]
         [AllowAnonymous]
-        public async Task<ActionResult> ConfirmEmail(string token, string email)
+        public async Task<ActionResult> ConfirmEmail([Required] string token, [Required] string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
@@ -269,7 +270,7 @@ namespace MyWeb.Controllers
                 {
                     sb.Append(error.Description);
                 }
-                return Forbid(sb.ToString());
+                return UnprocessableEntity(result);
             }
 
         }
