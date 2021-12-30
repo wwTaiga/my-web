@@ -10,15 +10,16 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using MyWeb.Models.Dtos;
 using MyWeb.Models.Entities;
+using MyWeb.Models.Enums;
 using MyWeb.Services;
 using OpenIddict.Abstractions;
 using OpenIddict.Core;
 using OpenIddict.EntityFrameworkCore.Models;
 using OpenIddict.Server.AspNetCore;
 using static OpenIddict.Abstractions.OpenIddictConstants;
-using static OpenIddict.Abstractions.OpenIddictConstants.Claims;
 
 namespace MyWeb.Controllers
 {
@@ -71,24 +72,22 @@ namespace MyWeb.Controllers
                     registerDto.password);
             if (result.Succeeded)
             {
-                var code = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
-                var callbackUrl = Url.Action(
-                    "ConfirmEmail", "Account",
-                    new { userId = newUser.Id, code = code },
-                    protocol: Request.Scheme);
-                await _emailService.sendEmailConfirmationEmailAsync(callbackUrl, newUser);
+                await _userManager.AddToRoleAsync(newUser, Role.User.ToString());
+                // TODO: Enable after come out better handling if user failed to verify email.
+                // var code = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
+                // code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                // var callbackUrl = Url.Action(
+                //     "ConfirmEmail", "Account",
+                //     new { userId = newUser.Id, code = code },
+                //     protocol: Request.Scheme);
+                // await _emailService.sendEmailConfirmationEmailAsync(callbackUrl, newUser);
 
+                // TODO: Change return format
                 return Ok("User created");
             }
             else
             {
-                // TODO: log
-                StringBuilder sb = new();
-                foreach (var error in result.Errors)
-                {
-                    sb.Append(error.Code + ": " + error.Description);
-                }
-                return Ok(sb.ToString());
+                return UnprocessableEntity(result);
             }
         }
 
@@ -225,7 +224,7 @@ namespace MyWeb.Controllers
         [HttpPost("logout")]
         public async Task<ActionResult> DoLogout()
         {
-            string authId = HttpContext.User.FindFirst(Private.AuthorizationId).Value;
+            string authId = HttpContext.User.FindFirst(Claims.Private.AuthorizationId).Value;
             await foreach (var token in _tokenManager.FindByAuthorizationIdAsync(authId))
             {
                 await _tokenManager.TryRevokeAsync(token);
@@ -265,11 +264,6 @@ namespace MyWeb.Controllers
             }
             else
             {
-                StringBuilder sb = new();
-                foreach (var error in result.Errors)
-                {
-                    sb.Append(error.Description);
-                }
                 return UnprocessableEntity(result);
             }
 

@@ -12,7 +12,7 @@ namespace MyWeb.Settings
             services.AddIdentity<LoginUser, IdentityRole>(o =>
             {
                 o.User.RequireUniqueEmail = true;
-                o.SignIn.RequireConfirmedEmail = true;
+                o.SignIn.RequireConfirmedEmail = false;
             })
                 .AddEntityFrameworkStores<DataContext>()
                 .AddDefaultTokenProviders()
