@@ -7,6 +7,7 @@ import ProtectedRoute from 'components/Router/ProtectedRoute';
 import Test from 'pages/Test';
 import LoginPage from 'pages/account/LoginPage';
 import RegisterPage from 'pages/account/RegisterPage';
+import EmailConfirm from 'pages/account/EmailConfirmedPage';
 
 const App = (): JSX.Element => {
     useEffect(() => {
@@ -27,6 +28,7 @@ const App = (): JSX.Element => {
                 <Route path="/" element={<HomePage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
+                <Route path="/email-confirm" element={<EmailConfirm />} />
                 <Route path="/home" element={<ProtectedRoute />}>
                     <Route path="/home" element={<Test />} />
                 </Route>
