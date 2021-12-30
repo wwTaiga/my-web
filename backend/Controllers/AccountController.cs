@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Authentication;
@@ -10,7 +9,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
 using MyWeb.Models.Dtos;
 using MyWeb.Models.Entities;
 using MyWeb.Models.Enums;
@@ -52,11 +50,11 @@ namespace MyWeb.Controllers
         }
 
         /// <summary>
-        /// Register a new user
+        /// Register a new user.
         /// </summary>
-        /// <param name="registerDto"></param>
-        /// <response code="200">Return success message</response>
-        /// <response code="403">Return error messages</response>
+        /// <param name="registerDto">Username, password and email</param>
+        /// <response code="200">Succes create new user</response>
+        /// <response code="400">Missing required input or malformed request</response>
         [HttpPost("register")]
         [AllowAnonymous]
         public async Task<ActionResult> DoRegister(RegisterDto registerDto)
@@ -91,6 +89,32 @@ namespace MyWeb.Controllers
             }
         }
 
+        /// <summary>
+        /// Endpoint that control authentication logic.
+        /// This endpoint need to use cotent type "x-www-form-urlencoded" to pass parameters.
+        /// Different flow may need different parameters.
+        /// Current support flow: password flow and refresh token flow.
+        /// </summary>
+        /// <remarks>
+        /// Sample password flow request:
+        /// ```
+        ///     grant_type: 'password'
+        ///     scope: 'openid offline_access profile roles'
+        ///     username: 'username'
+        ///     password: 'password'
+        ///     rememberMe: true | false
+        /// ```
+        ///
+        /// Sample refresh token flow request:
+        /// ```
+        ///     grant_type: 'refresh_token'
+        ///     scope: 'openid offline_access profile roles'
+        ///     refresh_token: 'refresh token string'
+        ///     rememberMe: true | false
+        /// ```
+        /// </remarks>
+        /// <response code="200">Return new jwt token and other request info</response>
+        /// <response code="400">Missing, invalid required input or malformed request</response>
         [HttpPost("~/connect/token")]
         [AllowAnonymous]
         public async Task<IActionResult> ConnectToken()
@@ -152,7 +176,6 @@ namespace MyWeb.Controllers
                     Scopes.OfflineAccess,
                     Scopes.Roles
                 }.Intersect(request.GetScopes()));
-                var a = DateTime.Now;
 
                 foreach (var claim in principal.Claims)
                 {
@@ -221,6 +244,8 @@ namespace MyWeb.Controllers
         /// <summary>
         /// Sign out user and revoke all valid refresh token of the user.
         /// </summary>
+        /// <response code="200">Success revoke all token of the login seesion</response>
+        /// <response code="401">Missing JWT token or unauthenticate user</response>
         [HttpPost("logout")]
         public async Task<ActionResult> DoLogout()
         {
@@ -234,21 +259,30 @@ namespace MyWeb.Controllers
             return Ok();
         }
 
-        [HttpPost("test")]
-        [AllowAnonymous]
-        public async Task<ActionResult> SendEmail()
-        {
-            var newUser = await _userManager.FindByIdAsync("71ea3f62-d3ab-4e2d-b303-ca5d58228f83");
-            if (newUser == null)
-                return Forbid();
-            var token = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
-            var callbackUrl = Url.Action(
-                    nameof(ConfirmEmail),
-                    new { token, email = newUser.Email });
-            await _emailService.sendEmailConfirmationEmailAsync(callbackUrl, newUser);
-            return Ok();
-        }
+        // WARNING: debug function
+        // [HttpPost("test")]
+        // [AllowAnonymous]
+        // public async Task<ActionResult> SendEmail()
+        // {
+        //     var newUser = await _userManager.FindByIdAsync("71ea3f62-d3ab-4e2d-b303-ca5d58228f83");
+        //     if (newUser == null)
+        //         return Forbid();
+        //     var token = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
+        //     var callbackUrl = Url.Action(
+        //             nameof(ConfirmEmail),
+        //             new { token, email = newUser.Email });
+        //     await _emailService.sendEmailConfirmationEmailAsync(callbackUrl, newUser);
+        //     return Ok();
+        // }
 
+        /// <summary>
+        /// Confirm user email.
+        /// </summary>
+        /// <param name="token">Email confirmation token</param>
+        /// <param name="email">Email that need to confirm</param>
+        /// <response code="200">Success revoke all token of the login seesion</response>
+        /// <response code="400">Missing required fields or malformed request</response>
+        /// <response code="422">Invalid inputs</response>
         [HttpGet("confirm-email")]
         [AllowAnonymous]
         public async Task<ActionResult> ConfirmEmail([Required] string token, [Required] string email)
