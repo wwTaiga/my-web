@@ -14,6 +14,7 @@ import {
     FormErrorMessage,
     useToast,
 } from '@chakra-ui/react';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
@@ -21,6 +22,7 @@ import { setIsLoggedIn } from 'store/account/accountSlice';
 import { useAppDispatch, useAppSelector } from 'store/hooks';
 import { LoginModel } from 'types';
 import { doLogin } from 'utils/account-utils';
+import { z } from 'zod';
 
 interface Input {
     username: string;
@@ -33,11 +35,18 @@ const LoginPage = (): JSX.Element => {
     const navigate = useNavigate();
     const isLoggedIn = useAppSelector((state) => state.account.isLoggedIn);
     const toast = useToast();
+    const schema = z.object({
+        username: z.string().min(1, 'This field is required'),
+        password: z.string().min(1, 'This field is required'),
+    });
     const {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm();
+    } = useForm({
+        mode: 'onBlur',
+        resolver: zodResolver(schema),
+    });
 
     useEffect(() => {
         if (isLoggedIn) {
@@ -85,24 +94,14 @@ const LoginPage = (): JSX.Element => {
                         <form onSubmit={handleSubmit(login)}>
                             <FormControl isInvalid={errors.username}>
                                 <FormLabel>User Name</FormLabel>
-                                <Input
-                                    type="text"
-                                    {...register('username', {
-                                        required: 'This is required',
-                                    })}
-                                />
+                                <Input type="text" {...register('username')} />
                                 <FormErrorMessage>
                                     {errors.username && errors.username.message}
                                 </FormErrorMessage>
                             </FormControl>
                             <FormControl isInvalid={errors.password}>
                                 <FormLabel>Password</FormLabel>
-                                <Input
-                                    type="password"
-                                    {...register('password', {
-                                        required: 'This is required',
-                                    })}
-                                />
+                                <Input type="password" {...register('password')} />
                                 <FormErrorMessage>
                                     {errors.password && errors.password.message}
                                 </FormErrorMessage>
