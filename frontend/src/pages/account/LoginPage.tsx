@@ -39,6 +39,7 @@ const LoginPage = (): JSX.Element => {
         username: z.string().min(1, 'This field is required'),
         password: z.string().min(1, 'This field is required'),
     });
+
     const {
         register,
         handleSubmit,
@@ -47,12 +48,6 @@ const LoginPage = (): JSX.Element => {
         mode: 'onBlur',
         resolver: zodResolver(schema),
     });
-
-    useEffect(() => {
-        if (isLoggedIn) {
-            navigate('/home', { replace: true });
-        }
-    }, []);
 
     const login = async (input: LoginModel): Promise<void> => {
         const result = await doLogin(input);
@@ -69,6 +64,12 @@ const LoginPage = (): JSX.Element => {
             });
         }
     };
+
+    useEffect(() => {
+        if (isLoggedIn) {
+            navigate('/home', { replace: true });
+        }
+    }, []);
 
     return (
         <Flex

@@ -28,3 +28,7 @@ export const getRegisterUrl = (): string => {
 export const getLogoutUrl = (): string => {
     return getCoreBaseUrl() + '/account/logout';
 };
+
+export const getIsEmailExistUrl = (email: string): string => {
+    return getCoreBaseUrl() + '/account/email/is-exist?email=' + email;
+};

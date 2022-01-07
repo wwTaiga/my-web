@@ -1,23 +1,61 @@
 import { ErrorResponse, FetchParams, Result } from 'types';
 import { retrieveToken } from './account-utils';
 
-const get = async (url: string): Promise<Result> => {
-    return await jsonFetchWrapper({ method: 'GET', url: url });
+export const jsonFetch = {
+    /**
+     * Perform get request.
+     *
+     * @param url - Url and params query (optional)
+     *
+     * @returns Result Promise
+     **/
+    get: async (url: string): Promise<Result> => {
+        return await jsonFetchWrapper({ method: 'GET', url: url });
+    },
+
+    /**
+     * Perform post request.
+     *
+     * @param url - Url
+     * @param body - Data need to send
+     *
+     * @returns Result Promise
+     **/
+    post: async (url: string, body: unknown): Promise<Result> => {
+        return await jsonFetchWrapper({ method: 'POST', url: url, body: body });
+    },
+
+    /**
+     * Perform put request.
+     *
+     * @param url - Url
+     * @param body - Data need to send
+     *
+     * @returns Result Promise
+     **/
+    put: async (url: string, body: unknown): Promise<Result> => {
+        return await jsonFetchWrapper({ method: 'PUT', url: url, body: body });
+    },
+
+    /**
+     * Perform delete request.
+     *
+     * @param url - Url
+     *
+     * @returns Result Promise
+     **/
+    delete: async (url: string): Promise<Result> => {
+        return await jsonFetchWrapper({ method: 'DELETE', url: url });
+    },
 };
 
-const post = async (url: string, body: unknown): Promise<Result> => {
-    return await jsonFetchWrapper({ method: 'POST', url: url, body: body });
-};
-
-const put = async (url: string, body: unknown): Promise<Result> => {
-    return await jsonFetchWrapper({ method: 'PUT', url: url, body: body });
-};
-
-// prefixed with underscored because delete is a reserved word in javascript
-const _delete = async (url: string): Promise<Result> => {
-    return await jsonFetchWrapper({ method: 'DELETE', url: url });
-};
-
+/**
+ * A fetch wrapper with content-type: application/json.
+ *
+ * @param fetchParams - method, url, and data (optional)
+ *
+ * @returns Result promise
+ **/
 const jsonFetchWrapper = async (fetchParams: FetchParams): Promise<Result> => {
     const requestOptions = {
         method: fetchParams.method,
@@ -33,7 +71,7 @@ const jsonFetchWrapper = async (fetchParams: FetchParams): Promise<Result> => {
         handleFetchError(error),
     );
 
-    if (response.status == 400) {
+    if (response.status == 400 || response.status == 422) {
         const data: ErrorResponse = await response.json();
         const errorDescs = Object.values(data.errors).join('\n');
         return { isSuccess: false, status: response.status, errorDesc: errorDescs };
@@ -43,8 +81,13 @@ const jsonFetchWrapper = async (fetchParams: FetchParams): Promise<Result> => {
         return { isSuccess: false, status: response.status, errorDesc: response.statusText };
     }
 
-    return { isSuccess: true, data: await response.json() };
+    try {
+        return { isSuccess: true, data: await response.json() };
+    } catch {
+        return { isSuccess: true };
+    }
 };
+
 /**
  * Return a new response with status code 503.
  *
@@ -56,11 +99,4 @@ export const handleFetchError = (error: TypeError): Response => {
     console.warn(error);
     const init: ResponseInit = { status: 503, statusText: 'Service Unavailable' };
     return new Response(null, init);
-};
-
-export const jsonFetch = {
-    get,
-    post,
-    put,
-    delete: _delete,
 };

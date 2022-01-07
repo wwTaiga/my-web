@@ -1,10 +1,10 @@
+import { WarningTwoIcon } from '@chakra-ui/icons';
 import {
     Flex,
     Box,
     FormControl,
     FormLabel,
     Input,
-    Checkbox,
     Stack,
     Link,
     Button,
@@ -14,15 +14,16 @@ import {
     FormErrorMessage,
     useToast,
 } from '@chakra-ui/react';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
-import { setIsLoggedIn } from 'store/account/accountSlice';
-import { useAppDispatch, useAppSelector } from 'store/hooks';
+import { useAppSelector } from 'store/hooks';
 import { Result } from 'types';
-import { doLogin } from 'utils/account-utils';
+import { isEmailExist } from 'utils/account-utils';
 import { jsonFetch } from 'utils/fetch-utils';
 import { getRegisterUrl } from 'utils/url-utils';
+import { z } from 'zod';
 
 interface Input {
     username: string;
@@ -30,26 +31,48 @@ interface Input {
 }
 
 const RegisterPage = (): JSX.Element => {
-    const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const isLoggedIn = useAppSelector((state) => state.account.isLoggedIn);
+    const toast = useToast();
+    const schema = z
+        .object({
+            username: z.string().min(1, 'This field is requird'),
+            email: z
+                .string()
+                .min(1, 'This field is required')
+                .email('Invalid email format')
+                .refine(async (value) => await isEmailExist(value), {
+                    message: 'Email is existed',
+                }),
+            password: z
+                .string()
+                .min(1, 'This field is required')
+                .min(6, 'Password length must more than 6 characters')
+                .regex(new RegExp('.*[A-Z].*'), 'Password must contains 1 uppercase character')
+                .regex(new RegExp('.*[a-z].*'), 'Password must contains 1 lowercase character')
+                .regex(new RegExp('.*\\d.*'), 'Password must contains 1 number')
+                .regex(
+                    new RegExp('.*[`~<>?,./!@#$%^&*()\\-_+="\'|{}\\[\\];:\\\\].*'),
+                    'Password must contains 1 special character',
+                ),
+            confirmPassword: z.string(),
+        })
+        .refine(({ password, confirmPassword }) => password === confirmPassword, {
+            message: 'Password not same',
+            path: ['confirmPassword'],
+        });
+
     const {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm();
-    const toast = useToast();
-
-    useEffect(() => {
-        if (isLoggedIn) {
-            navigate('/home', { replace: true });
-        }
-    }, []);
+    } = useForm({
+        mode: 'onBlur',
+        resolver: zodResolver(schema),
+    });
 
     const doRegister = async (input: Input): Promise<void> => {
-        input.username = '';
         const result: Result = await jsonFetch.post(getRegisterUrl(), input);
-        console.log(result.errorDesc);
         if (result.isSuccess) {
             toast({
                 title: 'Success',
@@ -67,6 +90,12 @@ const RegisterPage = (): JSX.Element => {
             });
         }
     };
+
+    useEffect(() => {
+        if (isLoggedIn) {
+            navigate('/home', { replace: true });
+        }
+    }, []);
 
     return (
         <Flex
@@ -92,37 +121,37 @@ const RegisterPage = (): JSX.Element => {
                         <form onSubmit={handleSubmit(doRegister)}>
                             <FormControl isInvalid={errors.username}>
                                 <FormLabel>User Name</FormLabel>
-                                <Input
-                                    type="text"
-                                    {...register('username', {
-                                        required: 'This is required',
-                                    })}
-                                />
+                                <Input type="text" {...register('username')} />
                                 <FormErrorMessage>
+                                    <WarningTwoIcon />
                                     {errors.username && errors.username.message}
+                                </FormErrorMessage>
+                            </FormControl>
+                            <FormControl isInvalid={errors.email}>
+                                <FormLabel>Email</FormLabel>
+                                <Input type="text" {...register('email')} />
+                                <FormErrorMessage>
+                                    <WarningTwoIcon />
+                                    {errors.email && errors.email.message}
                                 </FormErrorMessage>
                             </FormControl>
                             <FormControl isInvalid={errors.password}>
                                 <FormLabel>Password</FormLabel>
-                                <Input
-                                    type="password"
-                                    {...register('password', {
-                                        required: 'This is required',
-                                    })}
-                                />
+                                <Input type="password" {...register('password')} />
                                 <FormErrorMessage>
+                                    <WarningTwoIcon />
                                     {errors.password && errors.password.message}
                                 </FormErrorMessage>
                             </FormControl>
-                            <Stack spacing={10}>
-                                <Stack
-                                    direction={{ base: 'column', sm: 'row' }}
-                                    align={'start'}
-                                    justify={'space-between'}
-                                >
-                                    <Checkbox>Remember me</Checkbox>
-                                    <Link color={'blue.400'}>Forgot password?</Link>
-                                </Stack>
+                            <FormControl isInvalid={errors.confirmPassword}>
+                                <FormLabel>Repeat Password</FormLabel>
+                                <Input type="password" {...register('confirmPassword')} />
+                                <FormErrorMessage>
+                                    <WarningTwoIcon />
+                                    {errors.confirmPassword && errors.confirmPassword.message}
+                                </FormErrorMessage>
+                            </FormControl>
+                            <Stack spacing={10} pt={3}>
                                 <Stack
                                     direction={{ base: 'column', sm: 'row' }}
                                     align={'start'}

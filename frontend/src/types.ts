@@ -27,7 +27,7 @@ export interface UserProfile {
 export interface Result {
     isSuccess: boolean;
     status?: number;
-    data?: unknown;
+    data?: Record<string, unknown>;
     errorDesc?: string;
 }
 

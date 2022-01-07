@@ -1,6 +1,6 @@
 import { AuthToken, AuthTokenError, LoginModel, RefreshModel, Result, UserProfile } from 'types';
-import { getTokenUrl } from 'utils/url-utils';
-import { handleFetchError } from 'utils/fetch-utils';
+import { getIsEmailExistUrl, getTokenUrl } from 'utils/url-utils';
+import { handleFetchError, jsonFetch } from 'utils/fetch-utils';
 import jwtDecode from 'jwt-decode';
 
 /**
@@ -147,4 +147,26 @@ export const scheduleRefresh = (): void => {
             }
         }, (authToken.expires_in - 20) * 1000);
     }
+};
+
+/**
+ * Check if email is exist
+ *
+ * @param email - User email
+ *
+ * @returns Boolean promise
+ **/
+export const isEmailExist = async (email: string): Promise<boolean> => {
+    const result: Result = await jsonFetch.get(getIsEmailExistUrl(email));
+    if (!result.isSuccess) {
+        return false;
+    }
+
+    if (
+        result.data != null &&
+        result.data.isExist != null &&
+        typeof result.data.isExist === 'boolean'
+    )
+        return result.data.isExist;
+    return false;
 };
