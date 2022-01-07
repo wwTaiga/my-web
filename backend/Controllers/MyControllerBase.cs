@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -23,6 +24,20 @@ namespace MyWeb.Controllers
             }
             return UnprocessableEntity(
                 new { traceId = HttpContext.TraceIdentifier, errors = errorDescs });
+        }
+
+        /// <summary>
+        /// Produce 422 response. 
+        /// </summary>
+        /// <param name="errors">Data need to send</param>
+        /// <returns>
+        /// UnprocessableEntity (422) response with error description.
+        /// </returns>
+        [NonAction]
+        public override UnprocessableEntityObjectResult UnprocessableEntity(Object errors)
+        {
+            return UnprocessableEntity(
+                new { traceId = HttpContext.TraceIdentifier, errors = errors });
         }
     }
 }

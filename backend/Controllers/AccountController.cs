@@ -81,7 +81,7 @@ namespace MyWeb.Controllers
                 // await _emailService.sendEmailConfirmationEmailAsync(callbackUrl, newUser);
 
                 // TODO: Change return format
-                return Ok("User created");
+                return Ok();
             }
             else
             {
@@ -283,13 +283,14 @@ namespace MyWeb.Controllers
         /// <response code="200">Success revoke all token of the login seesion</response>
         /// <response code="400">Missing required fields or malformed request</response>
         /// <response code="422">Invalid inputs</response>
-        [HttpGet("confirm-email")]
+        [HttpGet("email/confirm")]
         [AllowAnonymous]
-        public async Task<ActionResult> ConfirmEmail([Required] string token, [Required] string email)
+        public async Task<ActionResult> ConfirmEmail([Required] string token,
+                [Required] string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
-                return BadRequest("Cannot find user");
+                return UnprocessableEntity(new { UserNotFound = "Cannot find the user." });
 
             var result = await _userManager.ConfirmEmailAsync(user, token);
             if (result.Succeeded)
@@ -301,6 +302,27 @@ namespace MyWeb.Controllers
                 return UnprocessableEntity(result);
             }
 
+        }
+
+        /// <summary>
+        /// Check if email is exist.
+        /// </summary>
+        /// <param name="email">Email that need to check</param>
+        /// <response code="200">Return true if email exist else return false</response>
+        /// <response code="400">Missing required fields or malformed request</response>
+        [HttpGet("email/is-exist")]
+        [AllowAnonymous]
+        public async Task<ActionResult> IsEmailExist([Required] string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user != null)
+            {
+                return Ok(new { isExist = false });
+            }
+            else
+            {
+                return Ok(new { isExist = true });
+            }
         }
     }
 }
