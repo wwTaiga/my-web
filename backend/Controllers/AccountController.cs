@@ -317,11 +317,11 @@ namespace MyWeb.Controllers
             var user = await _userManager.FindByEmailAsync(email);
             if (user != null)
             {
-                return Ok(new { isExist = false });
+                return Ok(new { isExist = true });
             }
             else
             {
-                return Ok(new { isExist = true });
+                return Ok(new { isExist = false });
             }
         }
     }

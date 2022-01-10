@@ -49,7 +49,7 @@ const RegisterPage = (): JSX.Element => {
                 .string()
                 .min(1, 'This field is required')
                 .email('Invalid email format')
-                .refine(async (value) => await isEmailExist(value), {
+                .refine(async (value) => !(await isEmailExist(value)), {
                     message: 'Email is existed',
                 }),
             password: z
