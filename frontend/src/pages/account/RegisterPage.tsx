@@ -18,10 +18,17 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
-import { useAppSelector } from 'store/hooks';
-import { Result } from 'types';
-import { isEmailExist } from 'utils/account-utils';
+import { setIsLoggedIn } from 'store/account/accountSlice';
+import { useAppDispatch, useAppSelector } from 'store/hooks';
+import { LoginModel, Result } from 'types';
+import { doLogin, isEmailExist } from 'utils/account-utils';
 import { jsonFetch } from 'utils/fetch-utils';
+import {
+    minOneLowerAlphaRegex,
+    minOneNumberRegex,
+    minOneSpecialCharRegex,
+    minOneUpperAlphaRegex,
+} from 'utils/regex-utils';
 import { getRegisterUrl } from 'utils/url-utils';
 import { z } from 'zod';
 
@@ -34,6 +41,7 @@ const RegisterPage = (): JSX.Element => {
     const navigate = useNavigate();
     const isLoggedIn = useAppSelector((state) => state.account.isLoggedIn);
     const toast = useToast();
+    const dispatch = useAppDispatch();
     const schema = z
         .object({
             username: z.string().min(1, 'This field is requird'),
@@ -48,13 +56,10 @@ const RegisterPage = (): JSX.Element => {
                 .string()
                 .min(1, 'This field is required')
                 .min(6, 'Password length must more than 6 characters')
-                .regex(new RegExp('.*[A-Z].*'), 'Password must contains 1 uppercase character')
-                .regex(new RegExp('.*[a-z].*'), 'Password must contains 1 lowercase character')
-                .regex(new RegExp('.*\\d.*'), 'Password must contains 1 number')
-                .regex(
-                    new RegExp('.*[`~<>?,./!@#$%^&*()\\-_+="\'|{}\\[\\];:\\\\].*'),
-                    'Password must contains 1 special character',
-                ),
+                .regex(minOneUpperAlphaRegex(), 'Password must contains 1 uppercase character')
+                .regex(minOneLowerAlphaRegex(), 'Password must contains 1 lowercase character')
+                .regex(minOneNumberRegex(), 'Password must contains 1 number')
+                .regex(minOneSpecialCharRegex(), 'Password must contains 1 special character'),
             confirmPassword: z.string(),
         })
         .refine(({ password, confirmPassword }) => password === confirmPassword, {
@@ -74,12 +79,25 @@ const RegisterPage = (): JSX.Element => {
     const doRegister = async (input: Input): Promise<void> => {
         const result: Result = await jsonFetch.post(getRegisterUrl(), input);
         if (result.isSuccess) {
-            toast({
-                title: 'Success',
-                position: 'top',
-                isClosable: true,
-                status: 'success',
-            });
+            const loginInput: LoginModel = {
+                username: input.username,
+                password: input.password,
+                rememberMe: false,
+            };
+            const loginResult = await doLogin(loginInput);
+            if (loginResult.isSuccess) {
+                dispatch(setIsLoggedIn(true));
+                navigate('/home');
+            } else {
+                toast({
+                    title: 'Registration Successfully',
+                    description: 'Will redirect to login page in 5 seconds',
+                    position: 'top',
+                    isClosable: true,
+                    status: 'success',
+                });
+                setTimeout(() => navigate('/login'), 5000);
+            }
         } else {
             toast({
                 title: 'Error',
