@@ -37,6 +37,7 @@ namespace MyWeb
 
             // Bind appsettings.json value to class
             services.Configure<EmailSettings>(Configuration.GetSection(nameof(EmailSettings)));
+            services.Configure<FrontendSettings>(Configuration.GetSection(nameof(FrontendSettings)));
 
             // Quartz job
             services.AddQuartzService();

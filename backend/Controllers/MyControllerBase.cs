@@ -15,7 +15,7 @@ namespace MyWeb.Controllers
         /// UnprocessableEntity (422) response with error description.
         /// </returns>
         [NonAction]
-        public UnprocessableEntityObjectResult UnprocessableEntity(IdentityResult result)
+        public UnprocessableEntityObjectResult Code422(IdentityResult result)
         {
             Dictionary<string, string> errorDescs = new();
             foreach (IdentityError error in result.Errors)
@@ -34,7 +34,7 @@ namespace MyWeb.Controllers
         /// UnprocessableEntity (422) response with error description.
         /// </returns>
         [NonAction]
-        public override UnprocessableEntityObjectResult UnprocessableEntity(Object errors)
+        public UnprocessableEntityObjectResult Code422(Object errors)
         {
             return UnprocessableEntity(
                 new { traceId = HttpContext.TraceIdentifier, errors = errors });

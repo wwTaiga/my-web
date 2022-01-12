@@ -1,6 +1,8 @@
 using System.Threading.Tasks;
+using System.Web;
 using MailKit.Net.Smtp;
 using MailKit.Security;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using MyWeb.Models;
@@ -12,10 +14,16 @@ namespace MyWeb.Services
     public class EmailService : IEmailService
     {
         private readonly EmailSettings _emailSettings;
+        private readonly FrontendSettings _frontendSettings;
+        private readonly UserManager<LoginUser> _userManager;
 
-        public EmailService(IOptions<EmailSettings> emailSettings)
+        public EmailService(IOptions<EmailSettings> emailSettings,
+                IOptions<FrontendSettings> frontendSettings,
+                UserManager<LoginUser> userManager)
         {
             _emailSettings = emailSettings.Value;
+            _frontendSettings = frontendSettings.Value;
+            _userManager = userManager;
         }
 
         public async Task sendEmailAsync(EmailMessage message)
@@ -35,7 +43,7 @@ namespace MyWeb.Services
             email.Sender = MailboxAddress.Parse(from);
             email.To.AddRange(message.To);
             email.Subject = message.Subject;
-            email.Body = new TextPart(MimeKit.Text.TextFormat.Text) { Text = message.Content };
+            email.Body = new TextPart(MimeKit.Text.TextFormat.Html) { Text = message.Content };
             return email;
         }
 
@@ -47,6 +55,22 @@ namespace MyWeb.Services
                 "Confirm your account",
                 "Please confirm your account by clicking this link: " +
                     "<a href=\"" + confirmationLink + "\">link</a>");
+
+            await sendEmailAsync(message);
+        }
+
+        public async Task sendResetPasswordEmailAsync(LoginUser user)
+        {
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            token = HttpUtility.UrlEncode(token);
+
+            EmailMessage message = new(
+                // new string[] { user.Email },
+                new string[] { "olgamelv98@gmail.com" },
+                "Your Password Reset Link",
+                "Please click this link to reset your account password: " +
+                    "<a href=\"" + _frontendSettings.ResetPasswordUrl(token, user.Id) +
+                    "\">link</a>");
 
             await sendEmailAsync(message);
         }

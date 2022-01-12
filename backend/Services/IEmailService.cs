@@ -16,5 +16,10 @@ namespace MyWeb.Services
         /// Send confirmation email.
         /// </summary>
         Task sendEmailConfirmationEmailAsync(string confirmationLink, LoginUser user);
+
+        /// <summary>
+        /// Send reset password email.
+        /// </summary>
+        Task sendResetPasswordEmailAsync(LoginUser user);
     }
 }

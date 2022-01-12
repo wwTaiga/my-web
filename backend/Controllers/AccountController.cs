@@ -26,7 +26,6 @@ namespace MyWeb.Controllers
     [Authorize]
     public class AccountController : MyControllerBase
     {
-
         private readonly IEmailService _emailService;
         private readonly ITokenService _tokenService;
         private readonly IRepoService _repoService;
@@ -85,7 +84,7 @@ namespace MyWeb.Controllers
             }
             else
             {
-                return UnprocessableEntity(result);
+                return Code422(result);
             }
         }
 
@@ -259,6 +258,53 @@ namespace MyWeb.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Generate and send forgot password link to requested user email.
+        /// </summary>
+        /// <param name="email">Email that need to reset password</param>
+        /// <response code="200">Success send forgot password email</response>
+        /// <response code="400">Missing required fields or malformed request</response>
+        /// <response code="422">Invalid inputs</response>
+        [HttpGet("password/forgot")]
+        [AllowAnonymous]
+        public async Task<ActionResult> ForgotPassword([Required] string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+                return Code422(new { UserNotFound = "Cannot find the user." });
+
+            await _emailService.sendResetPasswordEmailAsync(user);
+            return Ok();
+        }
+
+        /// <summary>
+        /// Reset user password
+        /// </summary>
+        /// <param name="userId">User id</param>
+        /// <param name="token">Email confirmation token</param>
+        /// <param name="newPassword">New password</param>
+        /// <response code="200">Success reset password</response>
+        /// <response code="400">Missing required fields or malformed request</response>
+        /// <response code="422">Invalid inputs</response>
+        [HttpGet("password/reset")]
+        [AllowAnonymous]
+        public async Task<ActionResult> ResetPassword([Required] string userId, [Required] string token, [Required] string newPassword)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                return Code422(new { UserNotFound = "Cannot find the user." });
+
+            var result = await _userManager.ResetPasswordAsync(user, token, newPassword);
+            if (result.Succeeded)
+            {
+                return Ok(new { success = "Password has been reset." });
+            }
+            else
+            {
+                return Code422(result);
+            }
+        }
+
         // WARNING: debug function
         // [HttpPost("test")]
         // [AllowAnonymous]
@@ -290,7 +336,7 @@ namespace MyWeb.Controllers
         {
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
-                return UnprocessableEntity(new { UserNotFound = "Cannot find the user." });
+                return Code422(new { UserNotFound = "Cannot find the user." });
 
             var result = await _userManager.ConfirmEmailAsync(user, token);
             if (result.Succeeded)
@@ -299,9 +345,8 @@ namespace MyWeb.Controllers
             }
             else
             {
-                return UnprocessableEntity(result);
+                return Code422(result);
             }
-
         }
 
         /// <summary>
