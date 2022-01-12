@@ -1,4 +1,4 @@
-import Square from './Square';
+import Square from 'components/tic-tac-toe/Square';
 
 interface props {
     squares: string[];
@@ -6,13 +6,7 @@ interface props {
 }
 function Board(props: props): JSX.Element {
     function renderSquare(i: number) {
-        return (
-            <Square
-                value={props.squares[i]}
-                index={i}
-                onClick={props.onClick}
-            />
-        );
+        return <Square value={props.squares[i]} index={i} onClick={props.onClick} />;
     }
 
     return (

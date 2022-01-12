@@ -1,5 +1,5 @@
 import { ErrorResponse, FetchParams, Result } from 'types';
-import { retrieveToken } from './account-utils';
+import { retrieveToken } from 'utils/account-utils';
 
 export const jsonFetch = {
     /**

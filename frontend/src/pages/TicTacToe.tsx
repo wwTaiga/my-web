@@ -1,5 +1,5 @@
+import Board from 'components/tic-tac-toe/Board';
 import { useState } from 'react';
-import Board from '../components/tic-tac-toe/Board';
 
 interface props {
     squares: string[];
@@ -25,11 +25,7 @@ function TicTacToe(): JSX.Element {
 
         for (const winCondition of winConditions) {
             const [a, b, c] = winCondition;
-            if (
-                squares[a] &&
-                squares[a] == squares[b] &&
-                squares[b] == squares[c]
-            ) {
+            if (squares[a] && squares[a] == squares[b] && squares[b] == squares[c]) {
                 return squares[a];
             }
         }

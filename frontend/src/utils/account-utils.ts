@@ -1,7 +1,7 @@
-import { AuthToken, AuthTokenError, LoginModel, RefreshModel, Result, UserProfile } from 'types';
-import { getIsEmailExistUrl, getTokenUrl } from 'utils/url-utils';
-import { handleFetchError, jsonFetch } from 'utils/fetch-utils';
 import jwtDecode from 'jwt-decode';
+import { AuthToken, AuthTokenError, LoginModel, RefreshModel, Result, UserProfile } from 'types';
+import { handleFetchError, jsonFetch } from 'utils/fetch-utils';
+import { getIsEmailExistUrl, getTokenUrl } from 'utils/url-utils';
 
 /**
  * If refresh token exist in local storage, use it token to get a new access token and refresh

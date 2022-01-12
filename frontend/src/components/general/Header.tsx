@@ -1,39 +1,39 @@
 import {
-    Box,
-    Flex,
-    Text,
-    IconButton,
-    Button,
-    Stack,
-    Collapse,
-    Icon,
-    Link,
-    Popover,
-    PopoverTrigger,
-    PopoverContent,
-    useColorModeValue,
-    useBreakpointValue,
-    useDisclosure,
-    useColorMode,
-    Menu,
-    MenuButton,
-    Avatar,
-    MenuList,
-    MenuItem,
-    MenuDivider,
-} from '@chakra-ui/react';
-import {
-    HamburgerIcon,
-    CloseIcon,
     ChevronDownIcon,
     ChevronRightIcon,
+    CloseIcon,
+    HamburgerIcon,
     MoonIcon,
     SunIcon,
 } from '@chakra-ui/icons';
-import { useAppDispatch, useAppSelector } from 'store/hooks';
+import {
+    Avatar,
+    Box,
+    Button,
+    Collapse,
+    Flex,
+    Icon,
+    IconButton,
+    Link,
+    Menu,
+    MenuButton,
+    MenuDivider,
+    MenuItem,
+    MenuList,
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+    Stack,
+    Text,
+    useBreakpointValue,
+    useColorMode,
+    useColorModeValue,
+    useDisclosure,
+} from '@chakra-ui/react';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { setIsLoggedIn } from 'store/account/accountSlice';
+import { useAppDispatch, useAppSelector } from 'store/hooks';
 import { removeToken } from 'utils/account-utils';
-import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { jsonFetch } from 'utils/fetch-utils';
 import { getLogoutUrl } from 'utils/url-utils';
 
