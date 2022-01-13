@@ -25,12 +25,6 @@ import { LoginModel } from 'types';
 import { doLogin } from 'utils/account-utils';
 import { z } from 'zod';
 
-interface Input {
-    username: string;
-    password: string;
-    rememberMe: boolean;
-}
-
 const LoginPage = (): JSX.Element => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();

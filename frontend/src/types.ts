@@ -46,3 +46,13 @@ export interface FetchParams {
 export interface ErrorResponse {
     errors: Record<string, string>;
 }
+
+export interface RegisterForm {
+    username: string;
+    email: string;
+    password: string;
+}
+
+export interface ForgotPasswordForm {
+    email: string;
+}

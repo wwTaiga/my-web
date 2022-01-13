@@ -21,7 +21,7 @@ import { useForm } from 'react-hook-form';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { setIsLoggedIn } from 'store/account/accountSlice';
 import { useAppDispatch, useAppSelector } from 'store/hooks';
-import { LoginModel, Result } from 'types';
+import { LoginModel, RegisterForm, Result } from 'types';
 import { doLogin, isEmailExist } from 'utils/account-utils';
 import { jsonFetch } from 'utils/fetch-utils';
 import {
@@ -32,11 +32,6 @@ import {
 } from 'utils/regex-utils';
 import { urls } from 'utils/url-utils';
 import { z } from 'zod';
-
-interface Input {
-    username: string;
-    password: string;
-}
 
 const RegisterPage = (): JSX.Element => {
     const navigate = useNavigate();
@@ -77,7 +72,7 @@ const RegisterPage = (): JSX.Element => {
         resolver: zodResolver(schema),
     });
 
-    const doRegister = async (input: Input): Promise<void> => {
+    const doRegister = async (input: RegisterForm): Promise<void> => {
         const result: Result = await jsonFetch.post(urls.account.registerNewUser(), input);
         if (result.isSuccess) {
             const loginInput: LoginModel = {
