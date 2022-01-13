@@ -1,6 +1,9 @@
 import { ErrorResponse, FetchParams, Result } from 'types';
 import { retrieveToken } from 'utils/account-utils';
 
+/**
+ * A fetch wrapper which use to perform json request
+ **/
 export const jsonFetch = {
     /**
      * Perform get request.

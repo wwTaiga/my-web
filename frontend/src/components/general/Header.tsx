@@ -30,12 +30,13 @@ import {
     useColorModeValue,
     useDisclosure,
 } from '@chakra-ui/react';
+import { colors } from 'constans/colors';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { setIsLoggedIn } from 'store/account/accountSlice';
 import { useAppDispatch, useAppSelector } from 'store/hooks';
 import { removeToken } from 'utils/account-utils';
 import { jsonFetch } from 'utils/fetch-utils';
-import { getLogoutUrl } from 'utils/url-utils';
+import { urls } from 'utils/url-utils';
 
 const Header = (): JSX.Element => {
     const { isOpen, onToggle } = useDisclosure();
@@ -45,7 +46,7 @@ const Header = (): JSX.Element => {
     const navigate = useNavigate();
 
     const logout = (): void => {
-        jsonFetch.post(getLogoutUrl(), null);
+        jsonFetch.post(urls.account.logout(), null);
         removeToken();
         dispatch(setIsLoggedIn(false));
         navigate('/');
@@ -54,14 +55,14 @@ const Header = (): JSX.Element => {
     return (
         <Box>
             <Flex
-                bg={useColorModeValue('white', 'gray.800')}
-                color={useColorModeValue('gray.600', 'white')}
+                bg={useColorModeValue(colors.light.bg, colors.dark.bg)}
+                color={useColorModeValue('gray.', 'white')}
                 minH={'60px'}
                 py={{ base: 2 }}
                 px={{ base: 4 }}
                 borderBottom={1}
                 borderStyle={'solid'}
-                borderColor={useColorModeValue('gray.200', 'gray.900')}
+                borderColor={useColorModeValue(colors.light.border, colors.dark.border)}
                 align={'center'}
             >
                 <Flex
@@ -83,7 +84,7 @@ const Header = (): JSX.Element => {
                             md: 'left',
                         })}
                         fontFamily={'heading'}
-                        color={useColorModeValue('gray.800', 'white')}
+                        color={useColorModeValue(colors.light.text, colors.dark.text)}
                         onClick={() => navigate('/')}
                     >
                         Logo

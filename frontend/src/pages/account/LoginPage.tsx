@@ -15,6 +15,7 @@ import {
     useToast,
 } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { colors } from 'constans/colors';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
@@ -76,67 +77,67 @@ const LoginPage = (): JSX.Element => {
             minH={'calc(100vh - 60px)'}
             align={'center'}
             justify={'center'}
-            bg={useColorModeValue('gray.50', 'gray.800')}
+            bg={useColorModeValue(colors.light.bg, colors.dark.bg)}
         >
             <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
                 <Stack align={'center'}>
                     <Heading fontSize={'4xl'}>Sign in to your account</Heading>
                     <Text fontSize={'lg'} color={'gray.600'}>
-                        to enjoy all of our cool <Link color={'blue.400'}>features</Link> ✌️
+                        to enjoy all of our cool <Link color={colors.link}>features</Link> ✌️
                     </Text>
                 </Stack>
                 <Box
                     rounded={'lg'}
-                    bg={useColorModeValue('white', 'gray.700')}
+                    bg={useColorModeValue(colors.light.main, colors.dark.main)}
                     boxShadow={'lg'}
                     p={8}
                 >
-                    <Stack spacing={4}>
-                        <form onSubmit={handleSubmit(login)}>
-                            <FormControl isInvalid={errors.username}>
-                                <FormLabel>User Name</FormLabel>
-                                <Input type="text" {...register('username')} />
-                                <FormErrorMessage>
-                                    {errors.username && errors.username.message}
-                                </FormErrorMessage>
-                            </FormControl>
-                            <FormControl isInvalid={errors.password}>
-                                <FormLabel>Password</FormLabel>
-                                <Input type="password" {...register('password')} />
-                                <FormErrorMessage>
-                                    {errors.password && errors.password.message}
-                                </FormErrorMessage>
-                            </FormControl>
-                            <Stack spacing={10}>
-                                <Stack
-                                    direction={{ base: 'column', sm: 'row' }}
-                                    align={'start'}
-                                    justify={'space-between'}
-                                >
-                                    <Checkbox {...register('rememberMe')}>Remember me</Checkbox>
-                                    <Link color={'blue.400'}>Forgot password?</Link>
-                                </Stack>
-                                <Stack
-                                    direction={{ base: 'column', sm: 'row' }}
-                                    align={'start'}
-                                    justify={'space-between'}
-                                >
-                                    <Link color={'blue.400'} as={RouterLink} to="/register">
-                                        Create a new account
-                                    </Link>
-                                    <Button
-                                        type="submit"
-                                        bg={'blue.400'}
-                                        color={'white'}
-                                        _hover={{
-                                            bg: 'blue.500',
-                                        }}
-                                    >
-                                        Sign in
-                                    </Button>
-                                </Stack>
+                    <Stack spacing={4} as={'form'} onSubmit={handleSubmit(login)}>
+                        <FormControl isInvalid={errors.username}>
+                            <FormLabel>User Name</FormLabel>
+                            <Input type="text" {...register('username')} />
+                            <FormErrorMessage>
+                                {errors.username && errors.username.message}
+                            </FormErrorMessage>
+                        </FormControl>
+                        <FormControl isInvalid={errors.password}>
+                            <FormLabel>Password</FormLabel>
+                            <Input type="password" {...register('password')} />
+                            <FormErrorMessage>
+                                {errors.password && errors.password.message}
+                            </FormErrorMessage>
+                        </FormControl>
+                        <Stack spacing={10}>
+                            <Stack
+                                direction={{ base: 'column', sm: 'row' }}
+                                align={'start'}
+                                justify={'space-between'}
+                            >
+                                <Checkbox {...register('rememberMe')}>Remember me</Checkbox>
+                                <Link color={colors.link} as={RouterLink} to="/forgot-password">
+                                    Forgot password?
+                                </Link>
                             </Stack>
-                        </form>
+                            <Stack
+                                direction={{ base: 'column', sm: 'row' }}
+                                align={'start'}
+                                justify={'space-between'}
+                            >
+                                <Link color={colors.link} as={RouterLink} to="/register">
+                                    Create a new account
+                                </Link>
+                                <Button
+                                    type="submit"
+                                    bg={colors.primaryBtn.bg}
+                                    color={colors.primaryBtn.text}
+                                    _hover={{
+                                        bg: colors.primaryBtn.hover,
+                                    }}
+                                >
+                                    Sign in
+                                </Button>
+                            </Stack>
+                        </Stack>
                     </Stack>
                 </Box>
             </Stack>

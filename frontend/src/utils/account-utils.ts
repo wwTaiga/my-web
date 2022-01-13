@@ -1,7 +1,7 @@
 import jwtDecode from 'jwt-decode';
 import { AuthToken, AuthTokenError, LoginModel, RefreshModel, Result, UserProfile } from 'types';
 import { handleFetchError, jsonFetch } from 'utils/fetch-utils';
-import { getIsEmailExistUrl, getTokenUrl } from 'utils/url-utils';
+import { urls } from 'utils/url-utils';
 
 /**
  * If refresh token exist in local storage, use it token to get a new access token and refresh
@@ -71,7 +71,7 @@ const getToken = async (data: LoginModel | RefreshModel, grantType: string): Pro
         },
         body: new URLSearchParams(params),
     };
-    const response = await fetch(getTokenUrl(), options).catch((error: TypeError) =>
+    const response = await fetch(urls.account.token(), options).catch((error: TypeError) =>
         handleFetchError(error),
     );
 
@@ -157,7 +157,7 @@ export const scheduleRefresh = (): void => {
  * @returns Boolean promise
  **/
 export const isEmailExist = async (email: string): Promise<boolean> => {
-    const result: Result = await jsonFetch.get(getIsEmailExistUrl(email));
+    const result: Result = await jsonFetch.get(urls.account.isEmailExist(email));
     if (!result.isSuccess) {
         return false;
     }

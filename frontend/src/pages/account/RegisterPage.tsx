@@ -15,6 +15,7 @@ import {
     useToast,
 } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { colors } from 'constans/colors';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
@@ -29,7 +30,7 @@ import {
     minOneSpecialCharRegex,
     minOneUpperAlphaRegex,
 } from 'utils/regex-utils';
-import { getRegisterUrl } from 'utils/url-utils';
+import { urls } from 'utils/url-utils';
 import { z } from 'zod';
 
 interface Input {
@@ -77,7 +78,7 @@ const RegisterPage = (): JSX.Element => {
     });
 
     const doRegister = async (input: Input): Promise<void> => {
-        const result: Result = await jsonFetch.post(getRegisterUrl(), input);
+        const result: Result = await jsonFetch.post(urls.account.registerNewUser(), input);
         if (result.isSuccess) {
             const loginInput: LoginModel = {
                 username: input.username,
@@ -120,18 +121,18 @@ const RegisterPage = (): JSX.Element => {
             minH={'calc(100vh - 60px)'}
             align={'center'}
             justify={'center'}
-            bg={useColorModeValue('gray.50', 'gray.800')}
+            bg={useColorModeValue(colors.light.bg, colors.dark.bg)}
         >
             <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
                 <Stack align={'center'}>
                     <Heading fontSize={'4xl'}>Create your new account</Heading>
                     <Text fontSize={'lg'} color={'gray.600'}>
-                        to enjoy all of our cool <Link color={'blue.400'}>features</Link> ✌️
+                        to enjoy all of our cool <Link color={colors.link}>features</Link> ✌️
                     </Text>
                 </Stack>
                 <Box
                     rounded={'lg'}
-                    bg={useColorModeValue('white', 'gray.700')}
+                    bg={useColorModeValue(colors.light.main, colors.dark.main)}
                     boxShadow={'lg'}
                     p={8}
                 >
@@ -147,7 +148,7 @@ const RegisterPage = (): JSX.Element => {
                             </FormControl>
                             <FormControl isInvalid={errors.email}>
                                 <FormLabel>Email</FormLabel>
-                                <Input type="text" {...register('email')} />
+                                <Input type="email" {...register('email')} />
                                 <FormErrorMessage>
                                     <WarningTwoIcon />
                                     {errors.email && errors.email.message}
@@ -175,16 +176,16 @@ const RegisterPage = (): JSX.Element => {
                                     align={'start'}
                                     justify={'space-between'}
                                 >
-                                    <Link color={'blue.400'} as={RouterLink} to="/login">
+                                    <Link color={colors.link} as={RouterLink} to="/login">
                                         Already have account? <br />
                                         Go to Login
                                     </Link>
                                     <Button
                                         type="submit"
-                                        bg={'blue.400'}
-                                        color={'white'}
+                                        bg={colors.primaryBtn.bg}
+                                        color={colors.primaryBtn.text}
                                         _hover={{
-                                            bg: 'blue.500',
+                                            bg: colors.primaryBtn.hover,
                                         }}
                                     >
                                         Create account
