@@ -265,7 +265,7 @@ namespace MyWeb.Controllers
         /// <response code="200">Success send forgot password email</response>
         /// <response code="400">Missing required fields or malformed request</response>
         /// <response code="422">Invalid inputs</response>
-        [HttpGet("password/forgot")]
+        [HttpPost("password/forgot")]
         [AllowAnonymous]
         public async Task<ActionResult> ForgotPassword([Required] string email)
         {
@@ -286,7 +286,7 @@ namespace MyWeb.Controllers
         /// <response code="200">Success reset password</response>
         /// <response code="400">Missing required fields or malformed request</response>
         /// <response code="422">Invalid inputs</response>
-        [HttpGet("password/reset")]
+        [HttpPost("password/reset")]
         [AllowAnonymous]
         public async Task<ActionResult> ResetPassword([Required] string userId, [Required] string token, [Required] string newPassword)
         {
