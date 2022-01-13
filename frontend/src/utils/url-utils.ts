@@ -33,30 +33,38 @@ export const urls = {
      **/
     account: {
         /**
-         * Token api - use to retrive jwt and refresh token.
+         * Retrive jwt and refresh token.
          **/
         token: (): string => {
             return getCoreBaseUrl() + '/connect/token';
         },
         /**
-         * Register api - register new user.
+         * Register new user.
          **/
         registerNewUser: (): string => {
             return getCoreBaseUrl() + '/account/register';
         },
         /**
-         * Logout api - perform logout and revoke all tokens of this login session
+         * Perform logout and revoke all tokens of this login session
          **/
         logout: (): string => {
             return getCoreBaseUrl() + '/account/logout';
         },
         /**
-         * Checking api - use to check if the email is existed.
+         * Use to check if the email is existed.
          *
          * @param email - The email that need to check
          **/
         isEmailExist: (email: string): string => {
             return getCoreBaseUrl() + '/account/email/is-exist?email=' + email;
+        },
+        /**
+         * Use to send password reset link to requested email.
+         *
+         * @param email - The email that need to check
+         **/
+        forgotPassword: (email: string): string => {
+            return getCoreBaseUrl() + '/account/password/forgot?email=' + email;
         },
     },
 };
