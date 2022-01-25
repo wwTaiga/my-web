@@ -13,14 +13,18 @@ import {
 } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { colors } from 'constans/colors';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import { useAppSelector } from 'store/hooks';
 import { ForgotPasswordForm, Result } from 'types';
 import { jsonFetch } from 'utils/fetch-utils';
 import { urls } from 'utils/url-utils';
 import { z } from 'zod';
 
 const ForgotPasswordPage = (): JSX.Element => {
+    const isLoggedIn = useAppSelector((state) => state.account.isLoggedIn);
+    const navigate = useNavigate();
     const [state, setState] = useState<'initial' | 'submitting' | 'success'>('initial');
     const [msg, setMsg] = useState<'text' | 'error' | 'not found' | 'success'>('text');
     const schema = z.object({
@@ -51,6 +55,12 @@ const ForgotPasswordPage = (): JSX.Element => {
             }
         }
     };
+
+    useEffect(() => {
+        if (isLoggedIn) {
+            navigate('/home', { replace: true });
+        }
+    }, []);
 
     return (
         <Flex

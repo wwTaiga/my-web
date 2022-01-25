@@ -66,5 +66,11 @@ export const urls = {
         forgotPassword: (email: string): string => {
             return getCoreBaseUrl() + '/account/password/forgot?email=' + email;
         },
+        /**
+         * Reset password.
+         **/
+        resetPassword: (): string => {
+            return getCoreBaseUrl() + '/account/password/reset';
+        },
     },
 };
