@@ -60,13 +60,13 @@ namespace MyWeb.Controllers
         {
             LoginUser newUser = new()
             {
-                UserName = registerDto.userName,
-                Email = registerDto.email,
+                UserName = registerDto.UserName,
+                Email = registerDto.Email,
                 EmailConfirmed = false
             };
 
             var result = await _userManager.CreateAsync(newUser,
-                    registerDto.password);
+                    registerDto.Password);
             if (result.Succeeded)
             {
                 await _userManager.AddToRoleAsync(newUser, Role.User.ToString());
@@ -280,21 +280,19 @@ namespace MyWeb.Controllers
         /// <summary>
         /// Reset user password
         /// </summary>
-        /// <param name="userId">User id</param>
-        /// <param name="token">Email confirmation token</param>
-        /// <param name="newPassword">New password</param>
+        /// <param name="dto">Token, userId, and new password</param>
         /// <response code="200">Success reset password</response>
         /// <response code="400">Missing required fields or malformed request</response>
         /// <response code="422">Invalid inputs</response>
         [HttpPost("password/reset")]
         [AllowAnonymous]
-        public async Task<ActionResult> ResetPassword([Required] string userId, [Required] string token, [Required] string newPassword)
+        public async Task<ActionResult> ResetPassword(ResetPasswordDto dto)
         {
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userManager.FindByIdAsync(dto.UserId);
             if (user == null)
                 return Code422(new { UserNotFound = "Cannot find the user." });
 
-            var result = await _userManager.ResetPasswordAsync(user, token, newPassword);
+            var result = await _userManager.ResetPasswordAsync(user, dto.Token, dto.NewPassword);
             if (result.Succeeded)
             {
                 return Ok(new { success = "Password has been reset." });
