@@ -4,13 +4,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using MyWeb.Attributes;
-using MyWeb.Models.Dtos;
-using MyWeb.Models.Entities;
-using MyWeb.Models.Enums;
-using MyWeb.Services;
+using MyWeb.Core.Attributes;
+using MyWeb.Core.Models.Dtos;
+using MyWeb.Core.Models.Entities;
+using MyWeb.Core.Models.Enums;
+using MyWeb.Core.Services;
 
-namespace MyWeb.Controllers
+namespace MyWeb.Core.Controllers
 {
     [Route("users")]
     [ApiController]

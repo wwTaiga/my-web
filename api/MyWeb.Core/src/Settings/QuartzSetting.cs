@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Quartz;
 
-namespace MyWeb.Settings
+namespace MyWeb.Core.Settings
 {
     public static class QuartzSetting
     {

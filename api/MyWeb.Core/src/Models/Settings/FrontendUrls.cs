@@ -1,4 +1,4 @@
-namespace MyWeb.Models.Settings
+namespace MyWeb.Core.Models.Settings
 {
     public class FrontendUrls
     {

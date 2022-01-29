@@ -4,7 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace MyWeb.Repositories
+namespace MyWeb.Core.Repositories
 {
     public interface IGenericRepository<T> where T : class
     {

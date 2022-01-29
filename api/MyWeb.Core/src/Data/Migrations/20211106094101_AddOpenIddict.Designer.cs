@@ -4,10 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using MyWeb.Data;
+using MyWeb.Core.Data;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-namespace MyWeb.Data.Migrations
+namespace MyWeb.Core.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
     [Migration("20211106094101_AddOpenIddict")]

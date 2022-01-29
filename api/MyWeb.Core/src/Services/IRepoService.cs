@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
-using MyWeb.Repositories;
+using MyWeb.Core.Repositories;
 
-namespace MyWeb.Services
+namespace MyWeb.Core.Services
 {
     public interface IRepoService
     {

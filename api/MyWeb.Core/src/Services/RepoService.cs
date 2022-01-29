@@ -1,8 +1,8 @@
 using System.Threading.Tasks;
-using MyWeb.Data;
-using MyWeb.Repositories;
+using MyWeb.Core.Data;
+using MyWeb.Core.Repositories;
 
-namespace MyWeb.Services
+namespace MyWeb.Core.Services
 {
     public class RepoService : IRepoService
     {

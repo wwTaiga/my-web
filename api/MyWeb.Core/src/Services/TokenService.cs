@@ -3,7 +3,7 @@ using System.Security.Claims;
 using OpenIddict.Abstractions;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
-namespace MyWeb.Services
+namespace MyWeb.Core.Services
 {
     public class TokenService : ITokenService
     {

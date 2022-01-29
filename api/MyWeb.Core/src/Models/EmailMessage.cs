@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using MimeKit;
 
-namespace MyWeb.Models
+namespace MyWeb.Core.Models
 {
     public class EmailMessage
     {

@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
-using MyWeb.Models.Enums;
+using MyWeb.Core.Models.Enums;
 
-namespace MyWeb.Attributes
+namespace MyWeb.Core.Attributes
 {
     /// <summary>
     /// Authorize user role

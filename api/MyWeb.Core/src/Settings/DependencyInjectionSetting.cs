@@ -1,9 +1,9 @@
 using Microsoft.Extensions.DependencyInjection;
-using MyWeb.Data;
-using MyWeb.Repositories;
-using MyWeb.Services;
+using MyWeb.Core.Data;
+using MyWeb.Core.Repositories;
+using MyWeb.Core.Services;
 
-namespace MyWeb.Settings
+namespace MyWeb.Core.Settings
 {
     public static class DependencyInjectionSetting
     {

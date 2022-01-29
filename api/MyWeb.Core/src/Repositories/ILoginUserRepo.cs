@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
-using MyWeb.Models.Entities;
+using MyWeb.Core.Models.Entities;
 
-namespace MyWeb.Repositories
+namespace MyWeb.Core.Repositories
 {
     public interface ILoginUserRepo : IGenericRepository<LoginUser>
     {

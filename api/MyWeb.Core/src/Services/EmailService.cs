@@ -5,11 +5,11 @@ using MailKit.Security;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using MimeKit;
-using MyWeb.Models;
-using MyWeb.Models.Entities;
-using MyWeb.Models.Settings;
+using MyWeb.Core.Models;
+using MyWeb.Core.Models.Entities;
+using MyWeb.Core.Models.Settings;
 
-namespace MyWeb.Services
+namespace MyWeb.Core.Services
 {
     public class EmailService : IEmailService
     {

@@ -8,11 +8,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using MyWeb.Data;
-using MyWeb.Models.Settings;
-using MyWeb.Settings;
+using MyWeb.Core.Data;
+using MyWeb.Core.Models.Settings;
+using MyWeb.Core.Settings;
 
-namespace MyWeb
+namespace MyWeb.Core
 {
     public class Startup
     {

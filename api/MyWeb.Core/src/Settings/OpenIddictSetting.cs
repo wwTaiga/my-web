@@ -1,11 +1,11 @@
 using System;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
-using MyWeb.Data;
+using MyWeb.Core.Data;
 using OpenIddict.Validation.AspNetCore;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
-namespace MyWeb.Settings
+namespace MyWeb.Core.Settings
 {
     public static class OpenIddictSetting
     {

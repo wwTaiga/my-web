@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace MyWeb.Data.Migrations
+namespace MyWeb.Core.Data.Migrations
 {
     public partial class UpdateOpeniddictEntity : Migration
     {

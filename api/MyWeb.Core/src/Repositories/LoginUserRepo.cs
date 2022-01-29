@@ -1,10 +1,10 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using MyWeb.Data;
-using MyWeb.Models.Entities;
+using MyWeb.Core.Data;
+using MyWeb.Core.Models.Entities;
 
-namespace MyWeb.Repositories
+namespace MyWeb.Core.Repositories
 {
     public class LoginUserRepo : GenericRepository<LoginUser>, ILoginUserRepo
     {

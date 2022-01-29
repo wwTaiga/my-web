@@ -1,9 +1,9 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using MyWeb.Models.Entities;
+using MyWeb.Core.Models.Entities;
 
-namespace MyWeb.Data
+namespace MyWeb.Core.Data
 {
     public interface IDataContext
     {

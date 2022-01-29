@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MyWeb.Controllers
+namespace MyWeb.Core.Controllers
 {
     public abstract class MyControllerBase : ControllerBase
     {

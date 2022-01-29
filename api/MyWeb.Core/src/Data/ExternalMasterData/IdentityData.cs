@@ -3,10 +3,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
-using MyWeb.Models.Entities;
-using MyWeb.Models.Enums;
+using MyWeb.Core.Models.Entities;
+using MyWeb.Core.Models.Enums;
 
-namespace MyWeb.Data.ExternalMasterData
+namespace MyWeb.Core.Data.ExternalMasterData
 {
     public static class IdentityData
     {

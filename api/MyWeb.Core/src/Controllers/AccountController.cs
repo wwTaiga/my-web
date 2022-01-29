@@ -9,17 +9,17 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using MyWeb.Models.Dtos;
-using MyWeb.Models.Entities;
-using MyWeb.Models.Enums;
-using MyWeb.Services;
+using MyWeb.Core.Models.Dtos;
+using MyWeb.Core.Models.Entities;
+using MyWeb.Core.Models.Enums;
+using MyWeb.Core.Services;
 using OpenIddict.Abstractions;
 using OpenIddict.Core;
 using OpenIddict.EntityFrameworkCore.Models;
 using OpenIddict.Server.AspNetCore;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
-namespace MyWeb.Controllers
+namespace MyWeb.Core.Controllers
 {
     [Route("account")]
     [ApiController]

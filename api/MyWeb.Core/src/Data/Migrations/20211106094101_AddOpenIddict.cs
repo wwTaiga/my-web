@@ -1,7 +1,7 @@
 using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace MyWeb.Data.Migrations
+namespace MyWeb.Core.Data.Migrations
 {
     public partial class AddOpenIddict : Migration
     {

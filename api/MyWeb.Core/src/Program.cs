@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace MyWeb
+namespace MyWeb.Core
 {
     public class Program
     {

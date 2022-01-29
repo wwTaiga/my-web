@@ -1,8 +1,8 @@
 using System.Threading.Tasks;
-using MyWeb.Models;
-using MyWeb.Models.Entities;
+using MyWeb.Core.Models;
+using MyWeb.Core.Models.Entities;
 
-namespace MyWeb.Services
+namespace MyWeb.Core.Services
 {
     public interface IEmailService
     {

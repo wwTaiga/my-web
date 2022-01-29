@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace MyWeb.Models.Dtos
+namespace MyWeb.Core.Models.Dtos
 {
     /// <summary>
     /// Use for register a new user.

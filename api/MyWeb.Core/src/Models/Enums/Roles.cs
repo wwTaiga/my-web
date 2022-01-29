@@ -1,4 +1,4 @@
-namespace MyWeb.Models.Enums
+namespace MyWeb.Core.Models.Enums
 {
     public enum Role
     {

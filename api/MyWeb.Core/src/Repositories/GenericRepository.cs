@@ -4,9 +4,9 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using MyWeb.Data;
+using MyWeb.Core.Data;
 
-namespace MyWeb.Repositories
+namespace MyWeb.Core.Repositories
 {
     public abstract class GenericRepository<T> : IGenericRepository<T> where T : class
     {

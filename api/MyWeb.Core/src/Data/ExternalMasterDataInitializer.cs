@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Builder;
-using MyWeb.Data.ExternalMasterData;
+using MyWeb.Core.Data.ExternalMasterData;
 
-namespace MyWeb.Data
+namespace MyWeb.Core.Data
 {
     public static class MasterDataExternalInitializer
     {

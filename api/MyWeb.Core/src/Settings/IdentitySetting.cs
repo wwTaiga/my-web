@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
-using MyWeb.Data;
-using MyWeb.Models.Entities;
+using MyWeb.Core.Data;
+using MyWeb.Core.Models.Entities;
 
-namespace MyWeb.Settings
+namespace MyWeb.Core.Settings
 {
     public static class IdentitySetting
     {
