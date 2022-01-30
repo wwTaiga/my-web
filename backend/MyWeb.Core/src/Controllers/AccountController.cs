@@ -56,7 +56,7 @@ namespace MyWeb.Core.Controllers
         /// <response code="400">Missing required input or malformed request</response>
         [HttpPost("register")]
         [AllowAnonymous]
-        public async Task<ActionResult> DoRegister(RegisterDto registerDto)
+        public async Task<IActionResult> DoRegister(RegisterDto registerDto)
         {
             LoginUser newUser = new()
             {
@@ -246,7 +246,7 @@ namespace MyWeb.Core.Controllers
         /// <response code="200">Success revoke all token of the login seesion</response>
         /// <response code="401">Missing JWT token or unauthenticate user</response>
         [HttpPost("logout")]
-        public async Task<ActionResult> DoLogout()
+        public async Task<IActionResult> DoLogout()
         {
             string authId = HttpContext.User.FindFirst(Claims.Private.AuthorizationId).Value;
             await foreach (var token in _tokenManager.FindByAuthorizationIdAsync(authId))
@@ -267,7 +267,7 @@ namespace MyWeb.Core.Controllers
         /// <response code="422">Invalid inputs</response>
         [HttpPost("password/forgot")]
         [AllowAnonymous]
-        public async Task<ActionResult> ForgotPassword([Required] string email)
+        public async Task<IActionResult> ForgotPassword([Required] string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
@@ -286,7 +286,7 @@ namespace MyWeb.Core.Controllers
         /// <response code="422">Invalid inputs</response>
         [HttpPost("password/reset")]
         [AllowAnonymous]
-        public async Task<ActionResult> ResetPassword(ResetPasswordDto dto)
+        public async Task<IActionResult> ResetPassword(ResetPasswordDto dto)
         {
             var user = await _userManager.FindByIdAsync(dto.UserId);
             if (user == null)
@@ -306,7 +306,7 @@ namespace MyWeb.Core.Controllers
         // WARNING: debug function
         // [HttpPost("test")]
         // [AllowAnonymous]
-        // public async Task<ActionResult> SendEmail()
+        // public async Task<IActionResult> SendEmail()
         // {
         //     var newUser = await _userManager.FindByIdAsync("71ea3f62-d3ab-4e2d-b303-ca5d58228f83");
         //     if (newUser == null)
@@ -329,7 +329,7 @@ namespace MyWeb.Core.Controllers
         /// <response code="422">Invalid inputs</response>
         [HttpGet("email/confirm")]
         [AllowAnonymous]
-        public async Task<ActionResult> ConfirmEmail([Required] string token,
+        public async Task<IActionResult> ConfirmEmail([Required] string token,
                 [Required] string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
@@ -355,7 +355,7 @@ namespace MyWeb.Core.Controllers
         /// <response code="400">Missing required fields or malformed request</response>
         [HttpGet("email/is-exist")]
         [AllowAnonymous]
-        public async Task<ActionResult> IsEmailExist([Required] string email)
+        public async Task<IActionResult> IsEmailExist([Required] string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
             if (user != null)
