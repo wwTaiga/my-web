@@ -51,6 +51,7 @@ export interface RegisterForm {
     username: string;
     email: string;
     password: string;
+    confirmPassword: string;
 }
 
 export interface ForgotPasswordForm {
@@ -59,6 +60,7 @@ export interface ForgotPasswordForm {
 
 export interface ResetPasswordForm {
     password: string;
+    confirmPassword: string;
 }
 
 export interface ResetPasswordParams {

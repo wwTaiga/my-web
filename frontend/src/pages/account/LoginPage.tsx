@@ -39,7 +39,7 @@ const LoginPage = (): JSX.Element => {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm({
+    } = useForm<LoginModel>({
         mode: 'onBlur',
         resolver: zodResolver(schema),
     });
@@ -87,14 +87,14 @@ const LoginPage = (): JSX.Element => {
                     p={8}
                 >
                     <Stack spacing={4} as={'form'} onSubmit={handleSubmit(login)}>
-                        <FormControl isInvalid={errors.username}>
+                        <FormControl isInvalid={!!errors.username}>
                             <FormLabel>User Name</FormLabel>
                             <Input type="text" {...register('username')} />
                             <FormErrorMessage>
                                 {errors.username && errors.username.message}
                             </FormErrorMessage>
                         </FormControl>
-                        <FormControl isInvalid={errors.password}>
+                        <FormControl isInvalid={!!errors.password}>
                             <FormLabel>Password</FormLabel>
                             <Input type="password" {...register('password')} />
                             <FormErrorMessage>

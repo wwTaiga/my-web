@@ -55,7 +55,7 @@ const ResetPasswordPage = (): JSX.Element => {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm({
+    } = useForm<ResetPasswordForm>({
         mode: 'onBlur',
         resolver: zodResolver(schema),
     });
@@ -129,7 +129,7 @@ const ResetPasswordPage = (): JSX.Element => {
                     p={8}
                 >
                     <Stack spacing={4} as={'form'} onSubmit={handleSubmit(resetPassword)}>
-                        <FormControl isInvalid={errors.password}>
+                        <FormControl isInvalid={!!errors.password}>
                             <FormLabel>New Password</FormLabel>
                             <Input
                                 type="password"
@@ -140,7 +140,7 @@ const ResetPasswordPage = (): JSX.Element => {
                                 {errors.password && errors.password.message}
                             </FormErrorMessage>
                         </FormControl>
-                        <FormControl isInvalid={errors.confirmPassword}>
+                        <FormControl isInvalid={!!errors.confirmPassword}>
                             <FormLabel>Repeat Password</FormLabel>
                             <Input
                                 type="password"

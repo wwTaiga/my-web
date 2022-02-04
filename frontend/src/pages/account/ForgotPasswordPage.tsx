@@ -34,7 +34,7 @@ const ForgotPasswordPage = (): JSX.Element => {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm({
+    } = useForm<ForgotPasswordForm>({
         mode: 'onBlur',
         resolver: zodResolver(schema),
     });
@@ -86,7 +86,7 @@ const ForgotPasswordPage = (): JSX.Element => {
                     as={'form'}
                     onSubmit={handleSubmit(submit)}
                 >
-                    <FormControl isInvalid={errors.email}>
+                    <FormControl isInvalid={!!errors.email}>
                         <Input
                             variant={'solid'}
                             borderWidth={1}

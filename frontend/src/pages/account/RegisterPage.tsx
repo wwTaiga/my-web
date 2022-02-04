@@ -67,7 +67,7 @@ const RegisterPage = (): JSX.Element => {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm({
+    } = useForm<RegisterForm>({
         mode: 'onBlur',
         resolver: zodResolver(schema),
     });
@@ -132,7 +132,7 @@ const RegisterPage = (): JSX.Element => {
                     p={8}
                 >
                     <Stack spacing={4} as="form" onSubmit={handleSubmit(doRegister)}>
-                        <FormControl isInvalid={errors.username}>
+                        <FormControl isInvalid={!!errors.username}>
                             <FormLabel>User Name</FormLabel>
                             <Input type="text" {...register('username')} />
                             <FormErrorMessage>
@@ -140,7 +140,7 @@ const RegisterPage = (): JSX.Element => {
                                 {errors.username && errors.username.message}
                             </FormErrorMessage>
                         </FormControl>
-                        <FormControl isInvalid={errors.email}>
+                        <FormControl isInvalid={!!errors.email}>
                             <FormLabel>Email</FormLabel>
                             <Input type="email" {...register('email')} />
                             <FormErrorMessage>
@@ -148,7 +148,7 @@ const RegisterPage = (): JSX.Element => {
                                 {errors.email && errors.email.message}
                             </FormErrorMessage>
                         </FormControl>
-                        <FormControl isInvalid={errors.password}>
+                        <FormControl isInvalid={!!errors.password}>
                             <FormLabel>Password</FormLabel>
                             <Input type="password" {...register('password')} />
                             <FormErrorMessage>
@@ -156,7 +156,7 @@ const RegisterPage = (): JSX.Element => {
                                 {errors.password && errors.password.message}
                             </FormErrorMessage>
                         </FormControl>
-                        <FormControl isInvalid={errors.confirmPassword}>
+                        <FormControl isInvalid={!!errors.confirmPassword}>
                             <FormLabel>Repeat Password</FormLabel>
                             <Input type="password" {...register('confirmPassword')} />
                             <FormErrorMessage>
