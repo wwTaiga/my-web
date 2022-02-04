@@ -71,9 +71,7 @@ const getToken = async (data: LoginModel | RefreshModel, grantType: string): Pro
         },
         body: new URLSearchParams(params),
     };
-    const response = await fetch(urls.account.token(), options).catch((error: TypeError) =>
-        handleFetchError(error),
-    );
+    const response = await fetch(urls.account.token(), options).catch(() => handleFetchError());
 
     if (response.status == 400) {
         const result: AuthTokenError = await response.json();

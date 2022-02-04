@@ -70,9 +70,7 @@ const jsonFetchWrapper = async (fetchParams: FetchParams): Promise<Result> => {
         Object.assign(requestOptions.headers, { Authorization: 'Bearer ' + accessToken });
     }
 
-    const response = await fetch(fetchParams.url, requestOptions).catch((error: TypeError) =>
-        handleFetchError(error),
-    );
+    const response = await fetch(fetchParams.url, requestOptions).catch(() => handleFetchError());
 
     if (response.status == 400 || response.status == 422) {
         const data: ErrorResponse = await response.json();
@@ -98,8 +96,7 @@ const jsonFetchWrapper = async (fetchParams: FetchParams): Promise<Result> => {
  *
  * @returns Response object
  **/
-export const handleFetchError = (error: TypeError): Response => {
-    console.warn(error);
+export const handleFetchError = (): Response => {
     const init: ResponseInit = { status: 503, statusText: 'Service Unavailable' };
     return new Response(null, init);
 };
