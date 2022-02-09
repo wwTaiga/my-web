@@ -15,17 +15,14 @@ services:
     volumes:
       - postgres:/data/postgres
 
-  # pgadmin:
-  #   container_name: pgadmin_container
-  #   image: dpage/pgadmin4
-  #   environment:
-  #     PGADMIN_DEFAULT_EMAIL: admin@admin.com
-  #     PGADMIN_DEFAULT_PASSWORD: admin
+  # elasticsearch:
+  #   container_name: elasticsearch_container
+  #   image: elasticsearch:7.17.0
   #   ports:
-  #     - "5050:80"
+  #     - "9200:9200"
   #   restart: unless-stopped
   #   volumes:
-  #     - pgadmin:/var/lib/pgadmin
+  #     - elasticsearch:/data/elasticsearch
 
 secrets:
   postgres_user:
@@ -34,4 +31,3 @@ secrets:
     file: ./.secrets/postgres_password.txt
 volumes:
   postgres:
-  # pgadmin:
