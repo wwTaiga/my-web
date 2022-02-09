@@ -1,16 +1,17 @@
-version: "3.7"
-
 services:
   postgres:
     container_name: postgres_container
-    image: postgres
+    image: postgres:14.1
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
+      POSTGRES_USER_FILE: /run/secrets/postgres_user
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
       PGDATA: /data/postgres
     ports:
       - "5432:5432"
     restart: unless-stopped
+    secrets:
+      - postgres_user
+      - postgres_password
     volumes:
       - postgres:/data/postgres
 
@@ -26,6 +27,11 @@ services:
   #   volumes:
   #     - pgadmin:/var/lib/pgadmin
 
+secrets:
+  postgres_user:
+    file: ./.secrets/postgres_user.txt
+  postgres_password:
+    file: ./.secrets/postgres_password.txt
 volumes:
   postgres:
   # pgadmin:
