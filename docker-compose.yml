@@ -1,13 +1,13 @@
 services:
   postgres:
-    container_name: postgres_container
+    container_name: postgres
     image: postgres:14.1
     environment:
       POSTGRES_USER_FILE: /run/secrets/postgres_user
       POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
       PGDATA: /data/postgres
     ports:
-      - "5432:5432"
+      - 5432:5432
     restart: unless-stopped
     secrets:
       - postgres_user
@@ -16,18 +16,34 @@ services:
       - postgres:/data/postgres
 
   # elasticsearch:
-  #   container_name: elasticsearch_container
+  #   container_name: elasticsearch
   #   image: elasticsearch:7.17.0
+  #   environment:
+  #     discovery.type: "single-node"
+  #     # xpack.security.enabled: "true"
+  #     # ELASTIC_PASSWORD_FILE: /run/secrets/elasticsearch_password
   #   ports:
-  #     - "9200:9200"
+  #     - 9200:9200
   #   restart: unless-stopped
   #   volumes:
   #     - elasticsearch:/data/elasticsearch
+
+  # kibana:
+  #   container_name: kibana
+  #   image: kibana:7.17.0
+  #   ports:
+  #     - 5601:5601
+  #   depends_on:
+  #     - elasticsearch
 
 secrets:
   postgres_user:
     file: ./.secrets/postgres_user.txt
   postgres_password:
     file: ./.secrets/postgres_password.txt
+  # elasticsearch_password:
+  #   file: ./.secrets/elasticsearch_password.txt
+
 volumes:
   postgres:
+  elasticsearch:
