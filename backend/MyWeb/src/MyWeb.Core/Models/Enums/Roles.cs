@@ -1,9 +1,8 @@
-namespace MyWeb.Core.Models.Enums
+namespace MyWeb.Core.Models.Enums;
+
+public enum Role
 {
-    public enum Role
-    {
-        SuperAdmin,
-        Admin,
-        User
-    }
+    SuperAdmin,
+    Admin,
+    User
 }

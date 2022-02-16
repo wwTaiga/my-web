@@ -2,23 +2,22 @@ using System.Threading.Tasks;
 using MyWeb.Core.Data;
 using MyWeb.Core.Repositories;
 
-namespace MyWeb.Core.Services
+namespace MyWeb.Core.Services;
+
+public class RepoService : IRepoService
 {
-    public class RepoService : IRepoService
+    private IDataContext _context;
+
+    public ILoginUserRepo LoginUser { get; }
+
+    public RepoService(IDataContext context, ILoginUserRepo loginUserRepo)
     {
-        private IDataContext _context;
+        _context = context;
+        LoginUser = loginUserRepo;
+    }
 
-        public ILoginUserRepo LoginUser { get; }
-
-        public RepoService(IDataContext context, ILoginUserRepo loginUserRepo)
-        {
-            _context = context;
-            LoginUser = loginUserRepo;
-        }
-
-        public async Task<int> SaveAsync()
-        {
-            return await _context.SaveChangesAsync();
-        }
+    public async Task<int> SaveAsync()
+    {
+        return await _context.SaveChangesAsync();
     }
 }

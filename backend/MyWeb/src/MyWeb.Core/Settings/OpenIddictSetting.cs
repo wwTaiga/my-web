@@ -5,19 +5,19 @@ using MyWeb.Core.Data;
 using OpenIddict.Validation.AspNetCore;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
-namespace MyWeb.Core.Settings
+namespace MyWeb.Core.Settings;
+
+public static class OpenIddictSetting
 {
-    public static class OpenIddictSetting
+    public static void AddOpenIddictService(this IServiceCollection services)
     {
-        public static void AddOpenIddictService(this IServiceCollection services)
-        {
-            services.AddOpenIddict()
-                .AddCore(options =>
-                {
+        services.AddOpenIddict()
+            .AddCore(options =>
+            {
                     // Configure OpenIddict to use the Entity Framework Core stores and models.
                     // Note: call ReplaceDefaultEntities() to replace the default OpenIddict entities.
                     options.UseEntityFrameworkCore()
-                        .UseDbContext<DataContext>();
+                    .UseDbContext<DataContext>();
 
                     // Configure OpenIddict to use Quartz to clean invalid and expired token.
                     // The job will run after 2 mins the app starts and run every hour if app is 
@@ -26,27 +26,27 @@ namespace MyWeb.Core.Settings
                     // Token created more than MinimumTokenLifespan, default 14 days.
                     // Authorization created more than MinimumAuthorizationLifeSpan, default 14 days
                     options.UseQuartz()
-                        .SetMinimumTokenLifespan(TimeSpan.FromHours(1));
-                })
-                .AddServer(options =>
-                {
-                    options.SetTokenEndpointUris("/connect/token");
+                    .SetMinimumTokenLifespan(TimeSpan.FromHours(1));
+            })
+            .AddServer(options =>
+            {
+                options.SetTokenEndpointUris("/connect/token");
 
                     // Authentication Flow
                     // More info:
                     // https://documentation.openiddict.com/guide/choosing-the-right-flow.html
                     options.AllowPasswordFlow()
-                        .AllowRefreshTokenFlow();
+                    .AllowRefreshTokenFlow();
 
                     // Set token default lifetime
                     options.SetAccessTokenLifetime(TimeSpan.FromMinutes(5))
-                        .SetRefreshTokenLifetime(TimeSpan.FromHours(1));
+                    .SetRefreshTokenLifetime(TimeSpan.FromHours(1));
 
                     // Add scope/permission, to allow client request the info
                     options.RegisterScopes(
-                        Scopes.Profile,
-                        Scopes.Roles
-                    );
+                    Scopes.Profile,
+                    Scopes.Roles
+                );
 
                     // Set the timespan for reuse refresh still can be reuse after redeem
                     options.SetRefreshTokenReuseLeeway(TimeSpan.FromSeconds(5));
@@ -54,38 +54,37 @@ namespace MyWeb.Core.Settings
                     // Allow request without authenticated client id and client name
                     options.AcceptAnonymousClients();
 
-                    options.AddDevelopmentSigningCertificate()
-                        .AddDevelopmentEncryptionCertificate();
+                options.AddDevelopmentSigningCertificate()
+                    .AddDevelopmentEncryptionCertificate();
 
-                    options.UseAspNetCore()
-                        .EnableTokenEndpointPassthrough()
-                        .DisableTransportSecurityRequirement();
-                })
-                .AddValidation(options =>
-                {
-                    options.UseLocalServer();
-                    options.UseAspNetCore();
-                });
-
-            // Configure Identity to use the same JWT claims as OpenIddict instead
-            // of the legacy WS-Federation claims it uses by default (ClaimTypes),
-            // which saves you from doing the mapping in your authorization controller.
-            services.Configure<IdentityOptions>(options =>
+                options.UseAspNetCore()
+                    .EnableTokenEndpointPassthrough()
+                    .DisableTransportSecurityRequirement();
+            })
+            .AddValidation(options =>
             {
-                options.ClaimsIdentity.UserNameClaimType = Claims.Name;
-                options.ClaimsIdentity.UserIdClaimType = Claims.Subject;
-                options.ClaimsIdentity.RoleClaimType = Claims.Role;
+                options.UseLocalServer();
+                options.UseAspNetCore();
             });
 
-            // Use OpenIddict as default authentication scheme
-            // Reference:
-            // https://github.com/openiddict/openiddict-core/issues/1182
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme;
-                options.DefaultForbidScheme = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme;
-            });
-        }
+        // Configure Identity to use the same JWT claims as OpenIddict instead
+        // of the legacy WS-Federation claims it uses by default (ClaimTypes),
+        // which saves you from doing the mapping in your authorization controller.
+        services.Configure<IdentityOptions>(options =>
+        {
+            options.ClaimsIdentity.UserNameClaimType = Claims.Name;
+            options.ClaimsIdentity.UserIdClaimType = Claims.Subject;
+            options.ClaimsIdentity.RoleClaimType = Claims.Role;
+        });
+
+        // Use OpenIddict as default authentication scheme
+        // Reference:
+        // https://github.com/openiddict/openiddict-core/issues/1182
+        services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme;
+            options.DefaultForbidScheme = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme;
+        });
     }
 }

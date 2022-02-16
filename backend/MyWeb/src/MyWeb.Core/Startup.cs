@@ -12,81 +12,80 @@ using MyWeb.Core.Data;
 using MyWeb.Core.Models.Settings;
 using MyWeb.Core.Settings;
 
-namespace MyWeb.Core
+namespace MyWeb.Core;
+
+public class Startup
 {
-    public class Startup
+    public Startup(IConfiguration configuration)
     {
-        public Startup(IConfiguration configuration)
+        Configuration = configuration;
+    }
+
+    public IConfiguration Configuration { get; }
+
+    // This method gets called by the runtime. Use this method to add services to the container.
+    public void ConfigureServices(IServiceCollection services)
+    {
+        services.AddDbContext<DataContext>(options =>
         {
-            Configuration = configuration;
+            var settings = Configuration.GetSection(nameof(PostgresDbSettings))
+                .Get<PostgresDbSettings>();
+            options.UseNpgsql(settings.ConnectionString);
+
+            options.UseOpenIddict();
+        });
+
+        // Bind appsettings.json value to class
+        services.Configure<EmailSettings>(Configuration.GetSection(nameof(EmailSettings)));
+        services.Configure<FrontendSettings>(Configuration.GetSection(nameof(FrontendSettings)));
+
+        // Quartz job
+        services.AddQuartzService();
+        // User management
+        services.AddIdentityService();
+        // Authentication and authorization
+        services.AddOpenIddictService();
+
+        services.AddCors();
+        services.AddRepositories();
+        services.AddServices();
+
+        services.AddControllers();
+        services.AddSwaggerGen(c =>
+        {
+            c.SwaggerDoc("v1", new OpenApiInfo { Title = "MyWeb", Version = "v1" });
+
+            var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+        });
+    }
+
+    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        if (env.IsDevelopment())
+        {
+            app.UseDeveloperExceptionPage();
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "MyWeb v1"));
         }
 
-        public IConfiguration Configuration { get; }
+        app.UseRouting();
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        app.UseCors(builder =>
+            builder.WithOrigins("http://localhost:3000")
+                .AllowCredentials()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
+
+        app.UseAuthentication();
+        app.UseAuthorization();
+
+        app.UseEndpoints(endpoints =>
         {
-            services.AddDbContext<DataContext>(options =>
-            {
-                var settings = Configuration.GetSection(nameof(PostgresDbSettings))
-                    .Get<PostgresDbSettings>();
-                options.UseNpgsql(settings.ConnectionString);
+            endpoints.MapControllers();
+        });
 
-                options.UseOpenIddict();
-            });
-
-            // Bind appsettings.json value to class
-            services.Configure<EmailSettings>(Configuration.GetSection(nameof(EmailSettings)));
-            services.Configure<FrontendSettings>(Configuration.GetSection(nameof(FrontendSettings)));
-
-            // Quartz job
-            services.AddQuartzService();
-            // User management
-            services.AddIdentityService();
-            // Authentication and authorization
-            services.AddOpenIddictService();
-
-            services.AddCors();
-            services.AddRepositories();
-            services.AddServices();
-
-            services.AddControllers();
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "MyWeb", Version = "v1" });
-
-                var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
-            });
-        }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "MyWeb v1"));
-            }
-
-            app.UseRouting();
-
-            app.UseCors(builder =>
-                builder.WithOrigins("http://localhost:3000")
-                    .AllowCredentials()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader());
-
-            app.UseAuthentication();
-            app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
-
-            app.InitializeDevData();
-        }
+        app.InitializeDevData();
     }
 }

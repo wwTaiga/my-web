@@ -3,15 +3,14 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MyWeb.Core.Models.Entities;
 
-namespace MyWeb.Core.Data
+namespace MyWeb.Core.Data;
+
+public interface IDataContext
 {
-    public interface IDataContext
-    {
-        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 
-        DbSet<T> Set<T>() where T : class;
+    DbSet<T> Set<T>() where T : class;
 
-        DbSet<LoginUser> LoginUser { get; set; }
+    DbSet<LoginUser> LoginUser { get; set; }
 
-    }
 }

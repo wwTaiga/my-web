@@ -10,99 +10,98 @@ using MyWeb.Core.Models.Entities;
 using MyWeb.Core.Models.Enums;
 using MyWeb.Core.Services;
 
-namespace MyWeb.Core.Controllers
+namespace MyWeb.Core.Controllers;
+
+[Route("users")]
+[ApiController]
+[Authorize]
+[AuthorizeRoles(Role.SuperAdmin, Role.Admin)]
+public class LoginUserController : ControllerBase
 {
-    [Route("users")]
-    [ApiController]
-    [Authorize]
-    [AuthorizeRoles(Role.SuperAdmin, Role.Admin)]
-    public class LoginUserController : ControllerBase
+    private readonly IRepoService _repoService;
+
+    public LoginUserController(IRepoService repoService)
     {
-        private readonly IRepoService _repoService;
+        _repoService = repoService;
+    }
 
-        public LoginUserController(IRepoService repoService)
+    [HttpGet("noau")]
+    [AllowAnonymous]
+    public async Task<ActionResult<IEnumerable<LoginUserDto>>> GaetAllUserAsync()
+    {
+        IEnumerable<LoginUser> loginUserList = await _repoService.LoginUser
+            .FindAllNTAsync();
+
+        return Ok(loginUserList.Select(loginUser => loginUser.asDto()));
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<LoginUserDto>>> GetAllUserAsync()
+    {
+        IEnumerable<LoginUser> loginUserList = await _repoService.LoginUser
+            .FindAllNTAsync();
+
+        return Ok(loginUserList.Select(loginUser => loginUser.asDto()));
+    }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<LoginUserDto>> GetUserByIdAsync(string id)
+    {
+        LoginUser loginUser = await _repoService.LoginUser.FindByConditionNT(
+                user => user.Id == id).FirstOrDefaultAsync();
+
+        if (loginUser is null)
         {
-            _repoService = repoService;
+            return NotFound();
         }
 
-        [HttpGet("noau")]
-        [AllowAnonymous]
-        public async Task<ActionResult<IEnumerable<LoginUserDto>>> GaetAllUserAsync()
-        {
-            IEnumerable<LoginUser> loginUserList = await _repoService.LoginUser
-                .FindAllNTAsync();
+        return Ok(loginUser.asDto());
+    }
 
-            return Ok(loginUserList.Select(loginUser => loginUser.asDto()));
+    [HttpPost]
+    public async Task<ActionResult> CreateLoginUserAsync(AddLoginUserDto userDto)
+    {
+        LoginUser user = new()
+        {
+        };
+
+        _repoService.LoginUser.AddAsync(user);
+        await _repoService.SaveAsync();
+
+        return Ok();
+    }
+
+    [HttpPut("{id}")]
+    public async Task<ActionResult> UpdateLoginUserAsync(string id, UpdateLoginUserDto userDto)
+    {
+        var user = await _repoService.LoginUser.FindByConditionNT(user => user.Id == id)
+            .FirstOrDefaultAsync();
+
+        if (user is null)
+        {
+            return NotFound();
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<LoginUserDto>>> GetAllUserAsync()
-        {
-            IEnumerable<LoginUser> loginUserList = await _repoService.LoginUser
-                .FindAllNTAsync();
+        _repoService.LoginUser.UpdateAsync(user);
+        await _repoService.SaveAsync();
 
-            return Ok(loginUserList.Select(loginUser => loginUser.asDto()));
+        return Ok();
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> DeleteUserAsync(string id)
+    {
+        var user = await _repoService.LoginUser.FindByConditionNT(user => user.Id == id)
+            .FirstOrDefaultAsync();
+
+        if (user is null)
+        {
+            return NotFound();
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<LoginUserDto>> GetUserByIdAsync(string id)
-        {
-            LoginUser loginUser = await _repoService.LoginUser.FindByConditionNT(
-                    user => user.Id == id).FirstOrDefaultAsync();
+        _repoService.LoginUser.DeleteAsync(user);
+        await _repoService.SaveAsync();
 
-            if (loginUser is null)
-            {
-                return NotFound();
-            }
-
-            return Ok(loginUser.asDto());
-        }
-
-        [HttpPost]
-        public async Task<ActionResult> CreateLoginUserAsync(AddLoginUserDto userDto)
-        {
-            LoginUser user = new()
-            {
-            };
-
-            _repoService.LoginUser.AddAsync(user);
-            await _repoService.SaveAsync();
-
-            return Ok();
-        }
-
-        [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateLoginUserAsync(string id, UpdateLoginUserDto userDto)
-        {
-            var user = await _repoService.LoginUser.FindByConditionNT(user => user.Id == id)
-                .FirstOrDefaultAsync();
-
-            if (user is null)
-            {
-                return NotFound();
-            }
-
-            _repoService.LoginUser.UpdateAsync(user);
-            await _repoService.SaveAsync();
-
-            return Ok();
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteUserAsync(string id)
-        {
-            var user = await _repoService.LoginUser.FindByConditionNT(user => user.Id == id)
-                .FirstOrDefaultAsync();
-
-            if (user is null)
-            {
-                return NotFound();
-            }
-
-            _repoService.LoginUser.DeleteAsync(user);
-            await _repoService.SaveAsync();
-
-            return Ok();
-        }
+        return Ok();
     }
 }

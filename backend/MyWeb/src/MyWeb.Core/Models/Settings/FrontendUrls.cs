@@ -1,7 +1,6 @@
-namespace MyWeb.Core.Models.Settings
+namespace MyWeb.Core.Models.Settings;
+
+public class FrontendUrls
 {
-    public class FrontendUrls
-    {
-        public string ResetPassword { get; set; }
-    }
+    public string ResetPassword { get; set; }
 }

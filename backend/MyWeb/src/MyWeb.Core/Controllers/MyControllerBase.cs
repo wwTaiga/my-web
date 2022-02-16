@@ -3,41 +3,41 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MyWeb.Core.Controllers
-{
-    public abstract class MyControllerBase : ControllerBase
-    {
-        /// <summary>
-        /// Convert <c>IdentityResult</c> to a json object and produce 422 response. 
-        /// </summary>
-        /// <param name="result">Identity result</param>
-        /// <returns>
-        /// UnprocessableEntity (422) response with error description.
-        /// </returns>
-        [NonAction]
-        public UnprocessableEntityObjectResult Code422(IdentityResult result)
-        {
-            Dictionary<string, string> errorDescs = new();
-            foreach (IdentityError error in result.Errors)
-            {
-                errorDescs.Add(error.Code, error.Description);
-            }
-            return UnprocessableEntity(
-                new { traceId = HttpContext.TraceIdentifier, errors = errorDescs });
-        }
+namespace MyWeb.Core.Controllers;
 
-        /// <summary>
-        /// Produce 422 response. 
-        /// </summary>
-        /// <param name="errors">Data need to send</param>
-        /// <returns>
-        /// UnprocessableEntity (422) response with error description.
-        /// </returns>
-        [NonAction]
-        public UnprocessableEntityObjectResult Code422(Object errors)
+public abstract class MyControllerBase : ControllerBase
+{
+    /// <summary>
+    /// Convert <c>IdentityResult</c> to a json object and produce 422 response. 
+    /// </summary>
+    /// <param name="result">Identity result</param>
+    /// <returns>
+    /// UnprocessableEntity (422) response with error description.
+    /// </returns>
+    [NonAction]
+    public UnprocessableEntityObjectResult Code422(IdentityResult result)
+    {
+        Dictionary<string, string> errorDescs = new();
+        foreach (IdentityError error in result.Errors)
         {
-            return UnprocessableEntity(
-                new { traceId = HttpContext.TraceIdentifier, errors = errors });
+            errorDescs.Add(error.Code, error.Description);
         }
+        return UnprocessableEntity(
+            new { traceId = HttpContext.TraceIdentifier, errors = errorDescs });
+    }
+
+    /// <summary>
+    /// Produce 422 response. 
+    /// </summary>
+    /// <param name="errors">Data need to send</param>
+    /// <returns>
+    /// UnprocessableEntity (422) response with error description.
+    /// </returns>
+    [NonAction]
+    public UnprocessableEntityObjectResult Code422(Object errors)
+    {
+        return UnprocessableEntity(
+            new { traceId = HttpContext.TraceIdentifier, errors = errors });
     }
 }
+

@@ -1,8 +1,7 @@
-namespace MyWeb.Core.Models.Dtos
-{
-    public record LoginUserDto(string Id, string Username);
+namespace MyWeb.Core.Models.Dtos;
 
-    public record AddLoginUserDto(string Username, string Password);
+public record LoginUserDto(string Id, string Username);
 
-    public record UpdateLoginUserDto(string Username, string Password);
-}
+public record AddLoginUserDto(string Username, string Password);
+
+public record UpdateLoginUserDto(string Username, string Password);
