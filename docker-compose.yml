@@ -14,15 +14,28 @@ services:
       - postgres_password
     volumes:
       - postgres:/data/postgres
-    network_mode: "host"
 
-  # test:
-  #   container_name: test
-  #   image: test:v1
-  #   ports:
-  #     - 5000:5000
-  #   restart: unless-stopped
-  #   network_mode: "host"
+  myweb:
+    container_name: myweb
+    image: myweb:v1
+    ports:
+      - 5000:80
+    restart: unless-stopped
+    volumes:
+      - type: bind
+        source: ${HOME}/logs
+        target: /var/log
+    environment:
+      MyWeb_PostgresDbSettings__Username: ${MyWeb_PostgresDbSettings__Username}
+      MyWeb_PostgresDbSettings__Password: ${MyWeb_PostgresDbSettings__Password}
+      MyWeb_EmailSettings__Password: ${MyWeb_EmailSettings__Password}
+
+  frontend:
+    container_name: frontend
+    image: frontend:v1
+    ports:
+      - 80:80
+    restart: unless-stopped
 
   # elasticsearch:
   #   container_name: elasticsearch

@@ -12,7 +12,7 @@ RUN dotnet build -c Release --no-restore
 
 RUN dotnet test
 
-RUN dotnet publish -c release -o /app --no-restore
+RUN dotnet publish ./src/MyWeb.Core/ -c Release -o /app --no-restore
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
 WORKDIR /app
