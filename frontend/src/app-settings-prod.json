@@ -1,8 +1,8 @@
 {
     "api": {
         "core": {
-            "domain": "http://localhost:5000",
-            "contextPath": "",
+            "domain": "http://localhost",
+            "contextPath": "/api",
             "defaultVersion": ""
         }
     }

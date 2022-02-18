@@ -70,6 +70,7 @@ public class Startup
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "MyWeb v1"));
         }
 
+        app.UsePathBase("/api");
         app.UseRouting();
 
         app.UseCors(builder =>

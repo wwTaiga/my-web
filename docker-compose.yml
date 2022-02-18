@@ -23,7 +23,7 @@ services:
     restart: unless-stopped
     volumes:
       - type: bind
-        source: ${HOME}/logs
+        source: ${LOGLOCATION}
         target: /var/log
     environment:
       MyWeb_PostgresDbSettings__Username: ${MyWeb_PostgresDbSettings__Username}
@@ -36,6 +36,10 @@ services:
     ports:
       - 80:80
     restart: unless-stopped
+    volumes:
+      - type: bind
+        source: ${LOGLOCATION}/nginx
+        target: /var/log/nginx
 
   # elasticsearch:
   #   container_name: elasticsearch
