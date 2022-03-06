@@ -6,7 +6,5 @@ public class FrontendSettings
     public FrontendUrls Url { get; set; }
 
     public string ResetPasswordUrl(string token, string userId)
-    {
-        return DomainName + Url.ResetPassword + "?token=" + token + "&userId=" + userId;
-    }
+        => DomainName + Url.ResetPassword + "?token=" + token + "&userId=" + userId;
 }
