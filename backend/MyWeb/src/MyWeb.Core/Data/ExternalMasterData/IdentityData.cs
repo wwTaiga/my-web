@@ -2,15 +2,18 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MyWeb.Core.Models.Entities;
 using MyWeb.Core.Models.Enums;
+using MyWeb.Core.Models.Settings;
 
 namespace MyWeb.Core.Data.ExternalMasterData;
 
 public static class IdentityData
 {
-    public static async Task InitializeData(IServiceProvider serviceProvider)
+    public static async Task InitializeData(IServiceProvider serviceProvider,
+        IConfiguration configuration)
     {
         using (var serviceScope =
             serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
@@ -28,21 +31,23 @@ public static class IdentityData
                 }
             }
 
+            var adminAccountSettings = configuration.GetSection(nameof(AdminAccountSettings))
+                .Get<AdminAccountSettings>();
             UserManager<LoginUser> userManager =
                 serviceScope.ServiceProvider.GetService<UserManager<LoginUser>>();
-            if (!dataContext.LoginUser.Any(u => u.UserName == "Admin"))
+            if (!dataContext.LoginUser.Any(u => u.UserName == adminAccountSettings.Username))
             {
                 LoginUser admin = new()
                 {
-                    UserName = "Admin",
-                    Email = "admin@admin.com",
+                    UserName = adminAccountSettings.Username,
+                    Email = adminAccountSettings.Email,
                     EmailConfirmed = true
                 };
-                await userManager.CreateAsync(admin, "Admin@1234");
+                await userManager.CreateAsync(admin, adminAccountSettings.Password);
             }
 
 
-            LoginUser user = await userManager.FindByNameAsync("Admin");
+            LoginUser user = await userManager.FindByNameAsync(adminAccountSettings.Username);
             if (!await userManager.IsInRoleAsync(user, Role.SuperAdmin.ToString()))
             {
                 await userManager.AddToRoleAsync(user, Role.SuperAdmin.ToString());

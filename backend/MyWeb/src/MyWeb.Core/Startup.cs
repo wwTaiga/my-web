@@ -87,6 +87,6 @@ public class Startup
             endpoints.MapControllers();
         });
 
-        app.InitializeDevData();
+        app.InitializeDevData(Configuration);
     }
 }

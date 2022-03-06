@@ -28,7 +28,14 @@ services:
     environment:
       MyWeb_PostgresDbSettings__Username: ${MyWeb_PostgresDbSettings__Username}
       MyWeb_PostgresDbSettings__Password: ${MyWeb_PostgresDbSettings__Password}
+      MyWeb_EmailSettings__From: ${MyWeb_EmailSettings__From}
+      MyWeb_EmailSettings__Username: ${MyWeb_EmailSettings__Username}
       MyWeb_EmailSettings__Password: ${MyWeb_EmailSettings__Password}
+      MyWeb_AdminAccountSettings__Username: ${MyWeb_AdminAccountSettings__Username}
+      MyWeb_AdminAccountSettings__Password: ${MyWeb_AdminAccountSettings__Password}
+      MyWeb_AdminAccountSettings__Email: ${MyWeb_AdminAccountSettings__Email}
+    depends_on:
+      - postgres
 
   frontend:
     container_name: frontend

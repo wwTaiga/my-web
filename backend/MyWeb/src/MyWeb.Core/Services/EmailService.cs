@@ -51,7 +51,7 @@ public class EmailService : IEmailService
     {
         EmailMessage message = new(
             // new string[] { user.Email },
-            new string[] { "olgamelv98@gmail.com" },
+            new string[] { user.Email },
             "Confirm your account",
             "Please confirm your account by clicking this link: " +
                 "<a href=\"" + confirmationLink + "\">link</a>");
@@ -66,7 +66,7 @@ public class EmailService : IEmailService
 
         EmailMessage message = new(
             // new string[] { user.Email },
-            new string[] { "olgamelv98@gmail.com" },
+            new string[] { user.Email },
             "Your Password Reset Link",
             "Please click this link to reset your account password: " +
                 "<a href=\"" + _frontendSettings.ResetPasswordUrl(token, user.Id) +
