@@ -1,25 +1,20 @@
-# Prerequisite
+### my-web
 
--docker
-<br>
--docker-compose
+My personal webapp for learning purpose.
 
-# Some docker command
+The stack used for this webapp:
 
-Before run the command, change directory to root folder - folder that contain docker-compose.yml
+- .net 6 (backend)
+- react (frontend)
+  - Page template -> [Chakra UI template](https://chakra-templates.dev/)
+- PostgreSQL (database)
 
-## run
+This webapp has these functions:
 
-. ./setup-ev-linux.sh
-<br>
-or
-<br>
-docker-compose up -d
+- Basic authentication with jwt token and refresh token (by integrating Identity Core and [OpenIddict](https://github.com/openiddict/openiddict-core))
+- Forgot and reset password function.
 
-## list running container
+Currently hosted at [Digital Ocean droplet](http://164.92.65.152/)
 
-docker ps
-
-## stop
-
-docker-compose down
+- Use Docker to run dockerized backend and database.
+- Use Nginx to host frontend and also act as reverse proxy (forward api request to backend).
