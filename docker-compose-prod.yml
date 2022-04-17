@@ -14,21 +14,35 @@ services:
       - postgres_password
     volumes:
       - postgres:/data/postgres
-    network_mode: "host"
 
-  test:
-    container_name: test
-    image: test:v1
+  myweb:
+    container_name: myweb
+    image: wwtaiga/my-web:v1
+    ports:
+      - 5000:80
     restart: unless-stopped
-    network_mode: "host"
+    volumes:
+      - type: bind
+        source: ${LOGLOCATION}
+        target: /var/log
+    environment:
+      MyWeb_PostgresDbSettings__Username: ${MyWeb_PostgresDbSettings__Username}
+      MyWeb_PostgresDbSettings__Password: ${MyWeb_PostgresDbSettings__Password}
+      MyWeb_EmailSettings__From: ${MyWeb_EmailSettings__From}
+      MyWeb_EmailSettings__Username: ${MyWeb_EmailSettings__Username}
+      MyWeb_EmailSettings__Password: ${MyWeb_EmailSettings__Password}
+      MyWeb_AdminAccountSettings__Username: ${MyWeb_AdminAccountSettings__Username}
+      MyWeb_AdminAccountSettings__Password: ${MyWeb_AdminAccountSettings__Password}
+      MyWeb_AdminAccountSettings__Email: ${MyWeb_AdminAccountSettings__Email}
+      MyWeb_FrontendSettings__DomainName: ${MyWeb_FrontendSettings__DomainName}
+    depends_on:
+      - postgres
 
 secrets:
   postgres_user:
     file: ./.secrets/postgres_user.txt
   postgres_password:
     file: ./.secrets/postgres_password.txt
-  # elasticsearch_password:
-  #   file: ./.secrets/elasticsearch_password.txt
 
 volumes:
   postgres:

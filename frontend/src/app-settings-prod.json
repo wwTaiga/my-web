@@ -1,7 +1,7 @@
 {
     "api": {
         "core": {
-            "domain": "http://localhost",
+            "domain": "http://164.92.65.152",
             "contextPath": "/api",
             "defaultVersion": ""
         }
